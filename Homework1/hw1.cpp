@@ -167,18 +167,6 @@ int main()
 	system("gnuplot logplots.gp");
 
 }
-	// ============================
-	// Part 3.b.extra
-	// ----------------------------
-	// Because I am curious
-	// ============================
-
-	/*vector<double> vec_Dx, vec_x;
-
-	for (int i=0;i<
-
-
-	*/
 	
 	// ============================
 	// Part 4.a
