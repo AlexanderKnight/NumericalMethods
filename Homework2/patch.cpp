@@ -12,7 +12,6 @@ Patch::Patch(int dimensions, vector<int>extents,vector<vector<double> > limits):
 
 	for(int i=1;i<dimensions;i++)
 	{
-		cout << "Stencil[i-1], extents[i-1]: " << stencil[i-1] << ", " << extents[i-1] << endl;
 		stencil.push_back(stencil[i-1]*extents[i-1]);
 	}
 	
@@ -21,23 +20,22 @@ Patch::Patch(int dimensions, vector<int>extents,vector<vector<double> > limits):
 	{
 		coordinates[i].resize(dimensions);
 		for(int dim=dimensions-1;dim>=0;dim--){
-			cout << "(coord, dim) : (" << i << "," << dim <<")" << endl;
-			if(dim==dimensions)
+			if(dim==dimensions-1)
 			{
-				cout << "coord: " << i << endl;
-				cout << "dim: " << dim << endl;
-				cout << "stencil[dim]: " << stencil[dim] << endl;
-				cout << "coord/stencil[dim]: " << i/stencil[dim] << endl;
-				cout << limits[dim][1] << endl;
-				cout << limits[dim][0] << endl;
-				cout << extents[dim] << endl;
-				cout << limits[dim][0]/(extents[dim]-1) << endl;
-				coordinates[i][dim]=(i/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
+				//cout << "coord: " << i << endl;
+				//cout << "dim: " << dim << endl;
+				//cout << "stencil[dim]: " << stencil[dim] << endl;
+				//cout << "coord/stencil[dim]: " << i/stencil[dim] << endl;
+				//cout << limits[dim][1] << endl;
+				//cout << limits[dim][0] << endl;
+				//cout << extents[dim] << endl;
+				//cout << limits[dim][0]/(extents[dim]-1) << endl;
+				coordinates[i][dim]=limits[dim][0]+(i/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
 				remain_point=i%stencil[dim];
 			}
 			else
 			{
-				coordinates[i][dim]=(remain_point/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
+				coordinates[i][dim]=limits[dim][0]+(remain_point/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
 				remain_point=remain_point%stencil[dim];
 			}
 		}
