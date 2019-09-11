@@ -1,18 +1,9 @@
 #include <vector>
-#include <list>
 #include <iostream>
-useing namespace std;
+using namespace std;
 
-class Mesh
-{
-	private:
-		int dim;  // dimensions
-		vector<int> ext; // points along each axis
-		int tot_points; // total points in mesh
-		
-	public:
-		Mesh(int dim, vector<int> extents);
-};
+
+#include "domain.hpp"
 
 Mesh::Mesh(int dimensions, vector<int> extents)
 {
@@ -20,7 +11,7 @@ Mesh::Mesh(int dimensions, vector<int> extents)
 	ext=extents;
 
 	tot_points=1;
-	for(int i=0;i<n;i++)
+	for(int i=0;i<dim;i++)
 	{
 		tot_points *= ext[i];
 	}
