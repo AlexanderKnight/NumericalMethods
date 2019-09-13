@@ -22,6 +22,11 @@ class Mesh
 //------------------------------------------------------
 //------------------------------------------------------
 
+/*
+    NOTE: Currently, all member functions of class 
+        DataMesh are in this header. Long term planning is to 
+        shift them to their own file, and just have the declarations here.
+*/
 
 template <class T> class DataMesh : public Mesh
 {
@@ -34,14 +39,21 @@ template <class T> class DataMesh : public Mesh
 		int get_total_points(void);
 		void print_datamesh(void);
 		void operator +=(DataMesh<T> B);
+		void operator +=(DataMesh<bool> B);
 		void operator *=(T a);
 		DataMesh<T> operator +(DataMesh<T> B);
+		DataMesh<bool> operator +(DataMesh<bool> B);
 	private:
 		vector<T> data;
 
 };
 
-template<typename T> inline DataMesh<T>::DataMesh(int dimensions, vector<int> extents):Mesh(dimensions,extents)
+template<typename T> inline 
+DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
+:Mesh(dimensions,extents)
+/*
+  Constructor for Class DataMesh
+*/
 {
 	Mesh(dimensions, extents);
 	int product = 1;
@@ -53,7 +65,21 @@ template<typename T> inline DataMesh<T>::DataMesh(int dimensions, vector<int> ex
 
 }
 
-template<typename T> inline void DataMesh<T>::set_all_data(vector<T> fill_data)
+template<typename T> inline 
+int DataMesh<T>::get_total_points(void)
+/* 
+  Gets total points in DataMesh.
+*/
+{
+	return data.size();
+}
+
+template<typename T> inline 
+void DataMesh<T>::set_all_data(vector<T> fill_data)
+/*
+  Given a vector of same size and data type, fills DataMesh with vector.
+  Useful to copy DataMesh.
+*/
 {
 	if (fill_data.size() != data.size())
 	{
@@ -68,27 +94,42 @@ template<typename T> inline void DataMesh<T>::set_all_data(vector<T> fill_data)
 	}
 }
 
-template<typename T> inline int DataMesh<T>::get_total_points(void)
-{
-	return data.size();
-}
 
-template<typename T> inline vector<T> DataMesh<T>::get_all_data(void)
+template<typename T> inline 
+vector<T> DataMesh<T>::get_all_data(void)
+/*
+  Gets all of data as one vector.
+*/
 {
 	return data;
 }
 
-template<typename T> inline void DataMesh<T>::set_data_point(int coordinate, T data_point)
+template<typename T> inline 
+void DataMesh<T>::set_data_point(int coordinate, T data_point)
+/*
+  Sets individual point in DataMesh with given value.
+*/
 {
 	data[coordinate]=data_point;
 }
 
-template<typename T> inline T DataMesh<T>::get_data_point(int coordinate)
+template<typename T> inline 
+T DataMesh<T>::get_data_point(int coordinate)
+/*
+  Returns value from DataMesh coordinate.
+*/
 {
 	return data[coordinate];
 }
 
-template<typename T> inline void DataMesh<T>::print_datamesh(void)
+template<typename T> inline 
+void DataMesh<T>::print_datamesh(void)
+/*
+  Prints the DataMesh to screen. Useful for debugging.
+  
+  WARNING: Currently assumes that DataMesh is 3D. 
+            This will be fixed soon.
+*/
 {
 	int coord;
 	for(int i=0;i<ext[0];i++)
@@ -106,7 +147,17 @@ template<typename T> inline void DataMesh<T>::print_datamesh(void)
 	}
 }
 
-template<> inline void DataMesh<bool>::operator +=(DataMesh<bool> B)
+template<> inline 
+void DataMesh<bool>::operator +=(DataMesh<bool> B)
+/*
+  Overloads the += operator for DataMesh<bool>.
+  Takes each point and does an AND operation for the pairs of values
+    at the equivalent coordinates.
+
+  Needs to be separated from the <int> and <double> += due to different
+    handling for bools. (If we wanted an OR operation instead, then
+    it would be the same)
+*/
 {
 	assert(data.size() == B.get_total_points());
 	assert(typeid(data) == typeid(B.get_all_data()));
@@ -116,18 +167,24 @@ template<> inline void DataMesh<bool>::operator +=(DataMesh<bool> B)
 	}
 }
 
-template<typename T> inline void DataMesh<T>::operator +=(DataMesh<T> B)
+template<typename T> inline 
+void DataMesh<T>::operator +=(DataMesh<T> B)
+/*
+  Overloads the += operator for DataMesh<int> and <double>.
+  Adds together each value at the equivalent coordinate.
+*/
 {
 	assert(data.size() == B.get_total_points());
 	assert(typeid(data) == typeid(B.get_all_data()));
 	for(int i=0;i<data.size();i++)
 	{
-		data[i] += B.get_data_point(i);
+		data[i] = (T)(data[i]+B.get_data_point(i));
 	}
 }
 
 
-template<> inline DataMesh<bool> DataMesh<bool>::operator +(DataMesh<bool> B)
+template<> inline 
+DataMesh<bool> DataMesh<bool>::operator +(DataMesh<bool> B)
 {
 	assert(data.size() == B.get_total_points());
 	assert(B.get_dim() == dim);
@@ -162,7 +219,7 @@ template<typename T> inline DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
 	T val;
 	for(int i=0;i<B.get_total_points();i++)
 	{
-		val = data[i]+B.get_data_point(i);
+		val = (T)(data[i]+B.get_data_point(i));
 		dm.set_data_point(i,val);
 	}
 	return dm;
@@ -185,7 +242,7 @@ class Patch : public Mesh
 		vector<double> get_coord(int coord);
 	protected:
 		vector<vector<double>> limits;
-	       	vector<vector<double>> coordinates;
+	       	vector<DataMesh<double>> coordinates;
 		vector<int> exts;
 };
 

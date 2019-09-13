@@ -4,15 +4,21 @@ using namespace std;
 
 #include "domain.hpp"
 
-Patch::Patch(int dimensions, vector<int>extents,vector<vector<double> > limits):Mesh(dimensions,extents)
+Patch::Patch(int dimensions, vector<int>extents,
+		vector<vector<double> > limits):Mesh(dimensions,extents)
+/*
+  Patch Class Constructor
+*/
+
 {
-	coordinates.resize(this->tot_points);
+	coordinates.resize(dimensions);
 
 	vector<int> stencil = {1};
 
 	for(int i=1;i<dimensions;i++)
 	{
 		stencil.push_back(stencil[i-1]*extents[i-1]);
+		coordinate[i]=DataMesh(dimensions,extents);
 	}
 	
 	int remain_point;
@@ -22,20 +28,15 @@ Patch::Patch(int dimensions, vector<int>extents,vector<vector<double> > limits):
 		for(int dim=dimensions-1;dim>=0;dim--){
 			if(dim==dimensions-1)
 			{
-				//cout << "coord: " << i << endl;
-				//cout << "dim: " << dim << endl;
-				//cout << "stencil[dim]: " << stencil[dim] << endl;
-				//cout << "coord/stencil[dim]: " << i/stencil[dim] << endl;
-				//cout << limits[dim][1] << endl;
-				//cout << limits[dim][0] << endl;
-				//cout << extents[dim] << endl;
-				//cout << limits[dim][0]/(extents[dim]-1) << endl;
-				coordinates[i][dim]=limits[dim][0]+(i/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
+				coordinates[dim].set_data_point(i,limits[dim][0]
+          +(i/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1));
 				remain_point=i%stencil[dim];
 			}
 			else
 			{
-				coordinates[i][dim]=limits[dim][0]+(remain_point/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
+				coordinates[dim].set_data_point(i,limits[dim][0]
+            +(remain_point/stencil[dim])
+              *(limits[dim][1]-limits[dim][0])/(extents[dim]-1));
 				remain_point=remain_point%stencil[dim];
 			}
 		}
@@ -43,15 +44,35 @@ Patch::Patch(int dimensions, vector<int>extents,vector<vector<double> > limits):
 }
 
 vector<double> Patch::get_coord(int coord)
+/* 
+  Given point, passes back spacial coordinates for that point
+*/
 {
-	return coordinates[coord];
+	vector<double> pass_coord;
+	for(int i=0;i<coordinates.size();i++)
+	{
+		pass_coord.push_back(coordinates[i][coord]);
+	}
+	return pass_coord;
 }
 
 void Patch::print(void)
+/*
+  Prints the patch coordinates in a grid pattern, for easier debugging.
+  Currently requires cases for 1D, 2D, and 3D. Looking to improve to a
+  general case.
+  
+  Format Example: 2x2x2 patch (x,y,z)
+
+  (0,0,0) (1,0,0)
+  (0,1,0) (1,1,0)
+
+  (0,0,1) (1,0,1)
+  (0,1,1) (1,1,1)
+*/
 {
 
 	int coor;
-	cout << "Extent size is " << this->ext.size() << endl;
 	if(ext.size()==3)
 	{
 		for(int k=0;k<this->ext[2];k++)
@@ -61,7 +82,9 @@ void Patch::print(void)
 				for(int i=0;i<this->ext[0];i++)
 				{
 					coor = k*this->ext[0]*this->ext[1]+j*this->ext[0]+i;
-					cout << "(" << coordinates[coor][0] << "," << coordinates[coor][1] << "," << coordinates[coor][2] << ") ";
+					cout << "(" << coordinates[0][coor] << "," 
+						<< coordinates[1][coor] << "," 
+						<< coordinates[2][coor] << ") ";
 				}
 				cout << endl;
 			}
@@ -75,7 +98,7 @@ void Patch::print(void)
 			for(int i=0;i<this->ext[0];i++)
 			{
 				coor = j*this->ext[0]+i;
-				cout << "(" << coordinates[coor][0] << "," << coordinates[coor][1] << ") ";
+				cout<<"("<<coordinates[0][coor]<<","<<coordinates[1][coor]<<") ";
 			}
 			cout << endl;
 		}
@@ -84,7 +107,7 @@ void Patch::print(void)
 	{
 		for(int i=0;i<this->tot_points;i++)
 		{
-			cout << coordinates[i][0] << " ";
+			cout << coordinates[0][i] << " ";
 		}
 	}
 }
