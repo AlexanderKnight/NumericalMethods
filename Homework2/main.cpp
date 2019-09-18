@@ -84,7 +84,7 @@ int main()
 		dmBool.print_datamesh();
 		cout << "Initial DataMesh dmBoolAlt:" << endl;
 		dmBoolAlt.print_datamesh();
-		dmBool += dmBoolAlt;
+		dmBool = dmBool + dmBoolAlt;
 		cout << "+= dmBoolAlt to dmBool:" << endl;
 		dmBool.print_datamesh();
 	}
@@ -95,12 +95,15 @@ int main()
 		cout << "Testing patch.cpp, domain of (-4,4),(-3,3),(-2,2)" << endl;
 		cout << "Testing extents size: " << extents.size() << endl;
 
+    cout << "Setting limits" << endl;
 		vector<double> xlim = {-4.,4.};
 		vector<double> ylim = {-3.,3.};
 		vector<double> zlim = {-2.,2.};
 
+    cout << "Creating vector<vector<double>> of limits" << endl;
 		vector<vector<double>> limits = {xlim,ylim,zlim};
 
+    cout << "creating patch" << endl;
 		Patch test_patch = Patch(extents.size(),extents,limits);
 		test_patch.print();
 	}

@@ -3,7 +3,9 @@
 #include <vector>
 #include <assert.h>
 #include <typeinfo>
+#include <iostream>
 using namespace std;
+
 
 class Mesh
 {
@@ -42,8 +44,6 @@ template <class T> class DataMesh : public Mesh
 		void operator +=(DataMesh<T> B);
 		DataMesh<T> operator +(DataMesh<T> B);
 		void operator *=(T a);
-		//void operator +=(DataMesh<bool> B);
-		//DataMesh<bool> operator +(DataMesh<bool> B);
 	private:
 		vector<T> data;
 

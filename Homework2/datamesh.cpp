@@ -6,7 +6,7 @@ using namespace std;
 
 
 template<typename T>  
-DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
+inline DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
 :Mesh(dimensions,extents)
 
 /* Constructor for Class DataMesh
@@ -109,29 +109,8 @@ void DataMesh<T>::print_datamesh(void)
 	}
 }
 
-/*template<>  
-void DataMesh<bool>::operator +=(DataMesh<bool> B)
-
-/* Overloads the += operator for DataMesh<bool>.
- * Takes each point and does an AND operation for the pairs of values
- *   at the equivalent coordinates.
- *
- * Needs to be separated from the <int> and <double> += due to different
- *   handling for bools. (If we wanted an OR operation instead, then
- *   it would be the same)
-*/
-
-/*{
-	assert(data.size() == B.get_total_points());
-	assert(typeid(data) == typeid(B.get_all_data()));
-	for(int i=0;i<data.size();i++)
-	{
-		data[i] = (data[i] && B.get_data_point(i));
-	}
-}*/
-
 template<typename T>  
-void DataMesh<T>::operator +=(DataMesh<T> B)
+inline void DataMesh<T>::operator +=(DataMesh<T> B)
 
 /* Overloads the += operator for DataMesh<int>, <double>, and <bool>.
  * Bool addition treated as AND operator.
@@ -140,12 +119,12 @@ void DataMesh<T>::operator +=(DataMesh<T> B)
 
 {
 	assert(data.size() == B.get_total_points());
-	assert(typeid(data) == typeid(B.get_all_data()));
-  if(typeid(data[0])==typeid(bool))
+	assert(typeid(data[0]) == typeid(B.get_data_point(0)));
+  if(typeid(T)==typeid(bool))
   {
     for(int i=0;i<data.size();i++)
     {
-      data[i] = (data[i] && B.get_data_point(i)); 
+      data[i] = data[i]*B.get_data_point(i); 
     }
   }
   else
@@ -156,35 +135,6 @@ void DataMesh<T>::operator +=(DataMesh<T> B)
     }
   }
 }
-
-
-/*template<>  
-DataMesh<bool> DataMesh<bool>::operator +(DataMesh<bool> B)
-
-/* Overloads the + operator to add two DataMesh<bool> together,
- * with the + operator being AND for the bool data at equivalent
- * coordinates.
- */
-
-/*{
-	assert(data.size() == B.get_total_points());
-	assert(B.get_dim() == dim);
-	assert(typeid(data) == typeid(B.get_all_data()));
-
-	for(int i=0;i<B.get_dim();i++)
-	{
-		assert(B.get_exts()[i] == ext[i]);
-	}
-	
-	DataMesh<bool> dm = DataMesh(B.get_dim(), B.get_exts());
-	bool val;
-	for(int i=0;i<B.get_total_points();i++)
-	{
-		val = (data[i] && B.get_data_point(i));
-		dm.set_data_point(i,val);
-	}
-	return dm;
-}*/
 
 template<typename T>  
 DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
@@ -205,11 +155,11 @@ DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
 	
 	DataMesh<T> dm = DataMesh(B.get_dim(), B.get_exts());
 	T val;
-  if(typeid(data[0])==typeid(bool))
+  if(typeid(T)==typeid(bool))
   {
     for(int i=0;i<B.get_total_points();i++)
     {
-      val = (data[i] && B.get_data_point(i));
+      val = data[i]*B.get_data_point(i);
       dm.set_data_point(i,val);
     }
   }
@@ -238,3 +188,6 @@ void DataMesh<T>::operator *= (T a)
 		data[i] *= a;
 	}
 }
+
+
+

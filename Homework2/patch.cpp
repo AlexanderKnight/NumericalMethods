@@ -1,8 +1,10 @@
 #include <vector>
 #include <iostream>
+#include <typeinfo>
 using namespace std;
 
 #include "domain.hpp"
+#include "datamesh.cpp"
 
 Patch::Patch(int dimensions, vector<int>extents,
 		vector<vector<double> > limits):Mesh(dimensions,extents)
@@ -11,32 +13,50 @@ Patch::Patch(int dimensions, vector<int>extents,
 */
 
 {
-	//coordinates.resize(dimensions);
-
+// Reminder that coordinates is DataMesh<vector<double>>
+  cout << "Creating stencil" << endl;
 	vector<int> stencil = {1};
 
-  //DataMesh<double> temp_dm = DataMesh<double>(dimensions,extents);
+cout << "filling stencil" << endl;
 	for(int i=1;i<dimensions;i++)
 	{
 		stencil.push_back(stencil[i-1]*extents[i-1]);
+cout << "Stencil is " << stencil[i-1]*extents[i-1] << endl;
+    
 		coordinates.push_back(DataMesh<double>(dimensions,extents));
 	}
 	
 	int remain_point;
+  double val;
+cout << "Filling coordinates" << endl;
+cout << "Coordiinate size is "<< coordinates.size() << endl;
+cout << "Dimension size is " << dimensions << endl;
 	for(int i=0;i<coordinates.size();i++)
 	{
+cout << "Coordinate is "<< i << endl;
 		for(int dim=dimensions-1;dim>=0;dim--){
+cout << "Dimension is " << dim << endl;
 			if(dim==dimensions-1)
 			{
-				coordinates[dim].set_data_point(i,limits[dim][0]
-          +(i/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1));
+cout << "Dim==Dimensions-1" << endl;
+        val = limits[dim][0]+(i/stencil[dim])*(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
+cout << "Coordinate Val is "<< val << endl;
+cout << "coordinates[dim] type is " << typeid(coordinates).name() << endl;
+cout << "Getting coordinate " << endl;
+cout << coordinates[dim].get_data_point(i)<<endl;
+cout << "Setting to value" << endl;
+				coordinates[dim].set_data_point(i, val);
+cout << "Coordinate [dim].set_dat_point(i,val) ran sucessfully" << endl;
 				remain_point=i%stencil[dim];
+cout << "Remaining point is" << remain_point << endl;
 			}
 			else
 			{
-				coordinates[dim].set_data_point(i,limits[dim][0]
-            +(remain_point/stencil[dim])
-              *(limits[dim][1]-limits[dim][0])/(extents[dim]-1));
+cout << "Dim!=Dimensions-1" << endl;
+        val=limits[dim][0]+(remain_point/stencil[dim])
+              *(limits[dim][1]-limits[dim][0])/(extents[dim]-1);
+cout << "Coordinate Val is "<< val << endl;
+				coordinates[dim].set_data_point(i,val);
 				remain_point=remain_point%stencil[dim];
 			}
 		}
