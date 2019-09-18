@@ -3,6 +3,7 @@
 using namespace std;
 
 #include "domain.hpp"
+#include "datamesh.cpp"
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
 	char test_datamesh;
 	char test_patch;
 
-	cout << "Inverse of Double : " << (double)!(0.) << endl;
+	cout << "True && True:" << (true && true) << endl;
 
 	cout << "Test Mesh?: (T/F)" << endl;
 	cin >> test_mesh;
