@@ -6,7 +6,7 @@ using namespace std;
 
 
 template<typename T>  
-inline DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
+DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
 :Mesh(dimensions,extents)
 
 /* Constructor for Class DataMesh
@@ -19,7 +19,7 @@ inline DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
 	{
 		product *= extents[i];
 	}
-	data.resize(product);
+	mesh_data.resize(product);
 
 }
 
@@ -30,7 +30,7 @@ int DataMesh<T>::get_total_points(void)
  */
 
 {
-	return data.size();
+	return mesh_data.size();
 }
 
 template<typename T>  
@@ -41,15 +41,15 @@ void DataMesh<T>::set_all_data(vector<T> fill_data)
  */
 
 {
-	if (fill_data.size() != data.size())
+	if (fill_data.size() != mesh_data.size())
 	{
 		cout << "DataMesh and new data not same size" << endl;
 	}
 	else
 	{
-		for(int i=0;i<data.size();i++)
+		for(int i=0;i<mesh_data.size();i++)
 		{
-			data[i] = fill_data[i];
+			mesh_data[i] = fill_data[i];
 		}
 	}
 }
@@ -62,7 +62,7 @@ vector<T> DataMesh<T>::get_all_data(void)
  */
 
 {
-	return data;
+	return mesh_data;
 }
 
 template<typename T>  
@@ -70,7 +70,7 @@ void DataMesh<T>::set_data_point(int coordinate, T data_point)
 /* Sets individual point in DataMesh with given value.
  */
 {
-	data[coordinate]=data_point;
+	mesh_data[coordinate]=data_point;
 }
 
 template<typename T>  
@@ -80,7 +80,7 @@ T DataMesh<T>::get_data_point(int coordinate)
  */
 
 {
-	return data[coordinate];
+	return mesh_data[coordinate];
 }
 
 template<typename T>  
@@ -101,7 +101,7 @@ void DataMesh<T>::print_datamesh(void)
 			for(int k=0;k<ext[2];k++)
 			{
 				coord = k*(ext[0]*ext[1])+j*ext[0]+i;
-				cout << data[coord] << " ";
+				cout << mesh_data[coord] << " ";
 			}
 			cout << endl;
 		}
@@ -118,20 +118,20 @@ inline void DataMesh<T>::operator +=(DataMesh<T> B)
  */
 
 {
-	assert(data.size() == B.get_total_points());
-	assert(typeid(data[0]) == typeid(B.get_data_point(0)));
+	assert(mesh_data.size() == B.get_total_points());
+	assert(typeid(mesh_data[0]) == typeid(B.get_data_point(0)));
   if(typeid(T)==typeid(bool))
   {
-    for(int i=0;i<data.size();i++)
+    for(int i=0;i<mesh_data.size();i++)
     {
-      data[i] = data[i]*B.get_data_point(i); 
+      mesh_data[i] = mesh_data[i]*B.get_data_point(i); 
     }
   }
   else
   {
-    for(int i=0;i<data.size();i++)
+    for(int i=0;i<mesh_data.size();i++)
     {
-      data[i] = (T)(data[i]+B.get_data_point(i));
+      mesh_data[i] = (T)(mesh_data[i]+B.get_data_point(i));
     }
   }
 }
@@ -144,7 +144,7 @@ DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
  */
 
 {
-	assert(data.size() == B.get_total_points());
+	assert(mesh_data.size() == B.get_total_points());
   //assert(typeid(data[0]) == typeid(B.get_data_point(0)))
 	assert(B.get_dim() == dim);
 
@@ -159,7 +159,7 @@ DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
   {
     for(int i=0;i<B.get_total_points();i++)
     {
-      val = data[i]*B.get_data_point(i);
+      val = mesh_data[i]*B.get_data_point(i);
       dm.set_data_point(i,val);
     }
   }
@@ -167,7 +167,7 @@ DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
   {  
     for(int i=0;i<B.get_total_points();i++)
     {
-      val = (T)(data[i]+B.get_data_point(i));
+      val = (T)(mesh_data[i]+B.get_data_point(i));
       dm.set_data_point(i,val);
     }
   }
@@ -183,9 +183,9 @@ void DataMesh<T>::operator *= (T a)
 
 {
   assert(typeid(a) != typeid(bool));
-	for(int i=0;i<data.size();i++)
+	for(int i=0;i<mesh_data.size();i++)
 	{
-		data[i] *= a;
+		mesh_data[i] *= a;
 	}
 }
 

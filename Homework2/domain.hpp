@@ -45,7 +45,7 @@ template <class T> class DataMesh : public Mesh
 		DataMesh<T> operator +(DataMesh<T> B);
 		void operator *=(T a);
 	private:
-		vector<T> data;
+		vector<T> mesh_data;
 
 };
 
@@ -61,7 +61,7 @@ class Patch : public Mesh
 		vector<double> get_coord(int coord);
 	protected:
 		vector<vector<double>> limits;
-   	vector<DataMesh<double>> coordinates;
+   	DataMesh<vector<double>> coordinates;
 		vector<int> exts;
 };
 
