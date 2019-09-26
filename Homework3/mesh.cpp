@@ -4,7 +4,7 @@ using namespace std;
 
 #include "domain.hpp"
 
-Mesh::Mesh(int dimensions, vector<int> extents)
+Mesh::Mesh(int dimensions, vector<int> &extents)
 /*
   Mesh Class Constructor
 */
@@ -24,7 +24,7 @@ Mesh::Mesh(int dimensions, vector<int> extents)
 	}
 }
 
-Mesh::Mesh(int dimensions, vector<int> extents, vector<int> gz_extents)
+Mesh::Mesh(int dimensions, vector<int> &extents, vector<int> &gz_extents)
 /*
   Mesh Class Constructor
 */
@@ -51,7 +51,7 @@ Mesh::Mesh(int dimensions, vector<int> extents, vector<int> gz_extents)
 	}
 }
 
-int Mesh::get_dim(void)
+int Mesh::get_dim(void) const
 /*
   Gets dimension of Mesh
 */
@@ -59,7 +59,7 @@ int Mesh::get_dim(void)
 	return dim;
 }
 
-vector<int> Mesh::get_exts(void)
+vector<int> Mesh::get_exts(void) const
 /*
   Gets extents of Mesh
 */
@@ -67,7 +67,7 @@ vector<int> Mesh::get_exts(void)
 	return ext;
 }
 
-int Mesh::get_total_points(void)
+int Mesh::get_total_points(void) const
 /*
   Gets total number of points in Mesh.
   Total points = Extents[0]*Extents[1]*....
@@ -76,7 +76,7 @@ int Mesh::get_total_points(void)
 	return tot_points;
 }
 
-vector<int> Mesh::get_coords(int coord)
+vector<int> Mesh::get_coords(int coord) const
 /*
  * Returns the integer location of a given coordinate
  */

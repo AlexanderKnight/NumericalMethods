@@ -6,8 +6,8 @@ using namespace std;
 #include "domain.hpp"
 #include "datamesh.cpp"
 
-Patch::Patch(int dimensions, vector<int>extents,
-		vector<vector<double> > limits):Mesh(dimensions,extents),
+Patch::Patch(int dimensions, vector<int> &extents,
+		vector<vector<double> > &limits):Mesh(dimensions,extents),
   coordinates(DataMesh<vector<double>>(dimensions,extents))
 /*
   Patch Class Constructor
@@ -47,7 +47,7 @@ cout << "Stencil is " << stencil[i-1]*extents[i-1] << endl;
 	}
 }
 
-vector<double> Patch::get_coord(int coord)
+vector<double> Patch::get_coord(int coord) const
 /* 
   Given point, passes back spacial coordinates for that point
 */
@@ -55,7 +55,7 @@ vector<double> Patch::get_coord(int coord)
 	return coordinates.get_data_point(coord);
 }
 
-void Patch::print(void)
+void Patch::print(void) const
 /*
  *  Prints the patch coordinates in a grid pattern, for easier debugging.
  *  Currently requires cases for 1D, 2D, and 3D. Looking to improve to a
@@ -117,7 +117,7 @@ void Patch::print(void)
   cout << endl;
 }
 
-double Patch::dx(int dim)
+double Patch::dx(int dim) const
 {
   return coordinates.get_data_point(stencil[dim])[dim]
             -coordinates.get_data_point(0)[dim];

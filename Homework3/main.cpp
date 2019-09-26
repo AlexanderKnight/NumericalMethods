@@ -15,7 +15,8 @@ int main()
   vector<int> gz_extents = {1};
   vector<vector<double> > limits = {{0.,2.*M_PI}};
   bool is_periodic=true;
-  double cs = 1.;
+  double cs=1.;
+  double cf;
   int time_steps = 300;
   
   vector<double> sinx;
@@ -56,8 +57,9 @@ int main()
         {
           cout << "        " << t << endl;
         }
-        ComputeRHS(P,U,dU,cs,"ForwardEuler",differencing[diffs]);
-        dU *= dx*Dt[dt];
+        ComputeRHS(P,U,dU,cs,"ForwardEuler",Dt[dt],differencing[diffs]);
+        cf = dx*Dt[dt];
+        dU *= cf;
         dU += U;
         U = dU;
         U.update_ghostzone();

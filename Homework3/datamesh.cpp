@@ -8,7 +8,7 @@ using namespace std;
 
 
 template<typename T>  
-DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
+DataMesh<T>::DataMesh(int dimensions, vector<int> &extents)
 :Mesh(dimensions,extents)
 
 /* Constructor for Class DataMesh
@@ -26,8 +26,8 @@ DataMesh<T>::DataMesh(int dimensions, vector<int> extents)
 }
 
 template<typename T>  
-DataMesh<T>::DataMesh(int dimensions, vector<int> extents, 
-                      vector<int> gz_extents, bool is_periodic)
+DataMesh<T>::DataMesh(int dimensions, vector<int> &extents, 
+                      vector<int> &gz_extents, bool &is_periodic)
 :Mesh(dimensions,extents,gz_extents)
 
 /* Constructor for Class DataMesh with ghost zone
@@ -48,7 +48,7 @@ DataMesh<T>::DataMesh(int dimensions, vector<int> extents,
 }
 
 template<typename T>
-void DataMesh<T>::setup_ghostzone(vector<int> extents,vector<int> gz_extents, bool is_periodic)
+void DataMesh<T>::setup_ghostzone(vector<int> &extents,vector<int> &gz_extents, bool &is_periodic)
     
 /* 
  * Builds ghost zone mask, covers edges of boundary of simulation
@@ -106,7 +106,7 @@ void DataMesh<T>::update_ghostzone(void)
 }
 
 template<typename T>
-bool DataMesh<T>::ghostzone(int coord)
+bool DataMesh<T>::ghostzone(int coord) const
 
 /* Returns if coordinate is a ghost zone point or not
  */
@@ -115,7 +115,7 @@ bool DataMesh<T>::ghostzone(int coord)
 }
 
 template<typename T>  
-int DataMesh<T>::get_total_points(void)
+int DataMesh<T>::get_total_points(void) const
 
 /* Gets total points in DataMesh.
  */
@@ -125,7 +125,7 @@ int DataMesh<T>::get_total_points(void)
 }
 
 template<typename T>  
-void DataMesh<T>::set_all_data(vector<T> fill_data)
+void DataMesh<T>::set_all_data(vector<T> &fill_data)
 
 /* Given a vector of same size and data type, fills DataMesh with vector.
  * Useful to copy DataMesh.
@@ -174,7 +174,7 @@ void DataMesh<T>::set_all_data(vector<T> fill_data)
 
 
 template<typename T>  
-vector<T> DataMesh<T>::get_all_data(void)
+vector<T> DataMesh<T>::get_all_data(void) const
 
 /* Gets all of data as one vector.
  */
@@ -184,7 +184,7 @@ vector<T> DataMesh<T>::get_all_data(void)
 }
 
 template<typename T>  
-void DataMesh<T>::set_data_point(int coordinate, T data_point)
+void DataMesh<T>::set_data_point(int coordinate, T &data_point)
 
 /* Sets individual point in DataMesh with given value.
  */
@@ -193,7 +193,7 @@ void DataMesh<T>::set_data_point(int coordinate, T data_point)
 }
 
 template<typename T>  
-T DataMesh<T>::get_data_point(int coordinate)
+T DataMesh<T>::get_data_point(int coordinate) const
 
 /* Returns value from DataMesh coordinate.
  */
@@ -203,7 +203,7 @@ T DataMesh<T>::get_data_point(int coordinate)
 }
 
 template<typename T>  
-void DataMesh<T>::print(void)
+void DataMesh<T>::print(void) const
 
 /* Prints the DataMesh to screen. Useful for debugging.
  */
@@ -247,7 +247,7 @@ void DataMesh<T>::print(void)
 }
 
 template<typename T>  
-void DataMesh<T>::print_ghostzone(void)
+void DataMesh<T>::print_ghostzone(void) const
 
 /* Prints the DataMesh to screen. Useful for debugging.
  */
@@ -290,7 +290,7 @@ void DataMesh<T>::print_ghostzone(void)
 }
 
 template<typename T>
-void DataMesh<T>::write(ofstream& filename)
+void DataMesh<T>::write(ofstream &filename) const
 
 /* Saves DM to file, specified by a stream. Currently saves entire DM in
  * one row. Future plans is to make that more workable for most plotting 
@@ -338,7 +338,7 @@ void DataMesh<T>::write(ofstream& filename)
   
 
 template<typename T>  
-inline void DataMesh<T>::operator +=(DataMesh<T> B)
+inline void DataMesh<T>::operator +=(DataMesh<T> &B)
 
 /* Overloads the += operator for DataMesh<int>, <double>, and <bool>.
  * Bool addition treated as AND operator.
@@ -365,7 +365,7 @@ inline void DataMesh<T>::operator +=(DataMesh<T> B)
 }
 
 template<typename T>  
-DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
+DataMesh<T> DataMesh<T>::operator +(DataMesh<T> &B)
 
 /* Overloads the + operator for <int> and <double> DataMesh's.
  * Adds data at equivalent coordinates
@@ -403,7 +403,7 @@ DataMesh<T> DataMesh<T>::operator +(DataMesh<T> B)
 }
 
 template<typename T>  
-void DataMesh<T>::operator *= (T a)
+void DataMesh<T>::operator *= (T &a)
 
 /* Overloads *= operator, for multiplying a <int> or <double> 
  * Datamesh by a scalar of the same type.
@@ -418,7 +418,7 @@ void DataMesh<T>::operator *= (T a)
 }
 
 template<typename T>  
-void DataMesh<T>::operator =(DataMesh<T> B)
+void DataMesh<T>::operator =(DataMesh<T> &B)
 
 /* Overloads the + operator for <int> and <double> DataMesh's.
  * Adds data at equivalent coordinates
@@ -437,6 +437,13 @@ void DataMesh<T>::operator =(DataMesh<T> B)
   {
     mesh_data[i]= B.get_data_point(i);
   }
+}
+
+template<typename T>
+T DataMesh<T>::operator [](int i) const
+{
+  assert(i < mesh_data.size());
+  return mesh_data[i];
 }
 
 template<typename T>
