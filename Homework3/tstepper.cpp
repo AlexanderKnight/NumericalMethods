@@ -12,7 +12,6 @@ TStepper::TStepper(DataMesh<double> &U, string method, string differencing, Patc
   int dim = U.get_dim();
   vector<int> exts=U.get_exts();
   vector<int> gz_exts=U.get_gz_exts();
-  cout << "Tryingt to get U.gz_exts: " << gz_exts[0] << endl;
   bool is_periodic=true;
 
   double dx = patch.dx(0);
@@ -35,23 +34,9 @@ TStepper::TStepper(DataMesh<double> &U, string method, string differencing, Patc
     U.write(datafile);
   }
 
-  cout << "Creating dU DM" << endl;
-  cout << "Checking constants:" << endl;
-  cout << "dim=" << dim << endl;
-  cout << "exts=";
-  for(int i=0;i<exts.size();i++)
-  {
-    cout << exts[i] << " ";
-  }
-  cout << endl;
-  cout << "gz_exts=" << gz_exts[0]<<endl;
-  cout << endl;
-  cout << "is_periodic=" << is_periodic <<endl;
   DataMesh<double> dU = DataMesh<double>(dim,exts);
-  cout << "dU DM created" << endl;
   for(int t=0;t<time_steps;t++)
   {
-    cout << "Time is t=" << t << endl;
     ComputeRHS(U,dU,cs,dx,method,dt,differencing);
     U = dU;
     U.update_ghostzone();

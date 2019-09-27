@@ -11,12 +11,12 @@ using namespace std;
 int main()
 {
   int dimensions = 1;
-  vector<int> extents = {300};
-  vector<int> gz_extents = {2};
+  vector<int> extents = {1500};
+  vector<int> gz_extents = {1};
   vector<vector<double> > limits = {{0.,2.*M_PI}};
   bool is_periodic=true;
   double cs=1.;
-  int time_steps = 300;
+  int time_steps =1500;
   bool write_datafile = true;
   
   vector<double> sinx;
@@ -32,43 +32,7 @@ int main()
   vector<string> differencing = {"centered", "downstream", "upstream"};
   vector<double> Cf = {0.1,0.2,0.3,0.4,0.5};
 
-  int m,d,c;
-  string method,diffs;
-  double cf;
-  for(int m=0;m<Method.size();m++)
-  {
-    method = Method[m];
-    for(int d=0;d<differencing.size();d++)
-    {
-      diffs = differencing[d];
-      cout << differencing[d] << endl;
-      for(int c=0;c<Cf.size();c++)
-      {
-        cf = Cf[c];
-        U.set_all_data(sinx);
-        U.update_ghostzone();
-        cout << "    " << cf << endl;
-        TStepper(U,method,diffs,P,time_steps,cf,cs,write_datafile);
-        //for(int t=0;t<time_steps;t++)
-        //{
-          //if(t%50==0)
-          //{
-            //cout << "        " << t << endl;
-          //}
-          //ComputeRHS(P,U,dU,cs,"ForwardEuler",Dt[dt],differencing[diffs]);
-          //cf = dx*Dt[dt];
-          //dU *= cf;
-          //dU += U;
-          //U = dU;
-          //U.update_ghostzone();
-          //U.write(datafile);
-        //}
-        //datafile.close();
-        U.clean();
-      }
-    }
-  }
-
+  // Setup sinewave data
   string sinefilename;
   vector<double> sinx_temp;
   sinx_temp.resize(extents[0]);
@@ -96,5 +60,45 @@ int main()
     }
     sinefile.close();
   }
+
+  // Start main program
+  int m,d,c;
+  string method,diffs;
+  double cf;
+  for(int m=0;m<Method.size();m++)
+  {
+    method = Method[m];
+    cout << Method[m] << endl;
+    for(int d=0;d<differencing.size();d++)
+    {
+      diffs = differencing[d];
+      cout << "    " << differencing[d] << endl;
+      for(int c=0;c<Cf.size();c++)
+      {
+        cf = Cf[c];
+        U.set_all_data(sinx);
+        U.update_ghostzone();
+        cout << "    " << "    " << cf << endl;
+        TStepper(U,method,diffs,P,time_steps,cf,cs,write_datafile);
+        //for(int t=0;t<time_steps;t++)
+        //{
+          //if(t%50==0)
+          //{
+            //cout << "        " << t << endl;
+          //}
+          //ComputeRHS(P,U,dU,cs,"ForwardEuler",Dt[dt],differencing[diffs]);
+          //cf = dx*Dt[dt];
+          //dU *= cf;
+          //dU += U;
+          //U = dU;
+          //U.update_ghostzone();
+          //U.write(datafile);
+        //}
+        //datafile.close();
+        U.clean();
+      }
+    }
+  }
+
 }
 

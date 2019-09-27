@@ -91,8 +91,8 @@ class ComputeRHS
     vector<vector<double>> k;
     void ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU, double &cs, double &dx, double &dt,
                 string differencing="centered");
-    void RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, const double &cs,
-                const double &dx, const double &dt);
+    void RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, string diff,
+                      const double &cs, const double &dx, const double &dt);
 };
 
 //----------------------------------------------------

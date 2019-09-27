@@ -7,36 +7,38 @@ using namespace std;
 #include "datamesh.cpp"
 
 double 
-centered( double &xip,  double &xim)
+centered(double &xip,  double &xi, double &xim)
 {
   return (xip-xim)/2.;
 }
 
 double 
-downstream( double &xip,  double &xi)
+downstream(double &xip,  double &xi, double &xim)
 {
   return (xip-xi);
 }
 
 double 
-upstream( double &xi,  double &xim)
+upstream(double &xip, double &xi,  double &xim)
 {
   return (xi-xim);
 }
 
+/*
 double 
-k1 ( double &xi,  double &xim, 
+k1 (double &xip, double &xi,  double &xim, 
              double &cs,  double &dx,  double &dt)
 {
-  return xi-(dt/dx)*cs*downstream(xi,xim);
+  return xi-(dt/dx)*cs*downstream(uip,xi,xim);
 }
 
 double 
-k2 ( double &xi,  double &xim, 
+k2 (double &xip, double &xi,  double &xim, 
              double &cs,  double &dx,  double &dt)
 {
-  return xi+k1(xi,xim,cs,dx,dt)+k1(xi,xim,cs,dx,dt);
+  return xi+k1(xip,xi,xim,cs,dx,dt)+k1(xip,xi,xim,cs,dx,dt);
 }
+*/
 
 ComputeRHS::ComputeRHS(DataMesh<double> &U, DataMesh<double> &dU,
                           double &cs, double &dx, string method, double &dt, string differencing)
@@ -47,7 +49,7 @@ ComputeRHS::ComputeRHS(DataMesh<double> &U, DataMesh<double> &dU,
   }
   else if (method=="RungeKutta3")
   {
-    RungeKutta3(U,dU,cs,dx,dt);
+    RungeKutta3(U,dU,differencing,cs,dx,dt);
   }
 }
 
@@ -67,8 +69,9 @@ ComputeRHS::ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU,
         for(int dim=0;dim<U.get_dim();dim++)
         {
           uip = U[i+1];
+          ui  = U[i];
           uim = U[i-1];
-          val = U[i]-cs*(dt/dx)*centered(uip,uim);
+          val = U[i]-cs*(dt/dx)*centered(uip,ui,uim);
           dU.set_data_point(i,val);
         }
       }
@@ -83,8 +86,9 @@ ComputeRHS::ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU,
         for(int dim=0;dim<U.get_dim();dim++)
         {
           uip = U[i+1];
-          ui = U[i];
-          val = U[i]-cs*(dt/dx)*downstream(uip,ui);
+          ui  = U[i];
+          uim = U[i-1];
+          val = U[i]-cs*(dt/dx)*downstream(uip,ui,uim);
           dU.set_data_point(i,val);
         }
       }
@@ -98,9 +102,10 @@ ComputeRHS::ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU,
       {
         for(int dim=0;dim<U.get_dim();dim++)
         {
-          ui = U[i];
+          uip = U[i+1];
+          ui  = U[i];
           uim = U[i-1];
-          val = U[i]-cs*(dt/dx)*upstream(ui,uim);
+          val = U[i]-cs*(dt/dx)*upstream(uip,ui,uim);
           dU.set_data_point(i,val);
         }
       }
@@ -109,10 +114,11 @@ ComputeRHS::ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU,
 }
 
 void
-ComputeRHS::RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, const double &cs, const double &dx, const double &dt)
+ComputeRHS::RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, string diff,
+                        const double &cs, const double &dx, const double &dt)
 {
   k.resize(3);
-  double ui,uim,val;
+  double uip,ui,uim,val;
 
   for(int i=0;i<k.size();i++)
   {
@@ -120,29 +126,70 @@ ComputeRHS::RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, const d
 
   }
 
-  for(int i=0;i<k[0].size();i++)
+  for(int i=0;i<k[0].size()-1;i++)
   {
 
     if(i==0)
     {
       continue;
     }
+    uip = U[i+1];
     ui = U[i];
     uim = U[i-1];
-    k[0][i]=U[i]+(dt/dx)*cs*downstream(ui,uim);
+    if(diff=="downstream")
+    {
+      k[0][i]=(dt/dx)*cs*downstream(uip,ui,uim);
+    }
+    else if (diff=="upstream")
+    {
+      k[0][i]=(dt/dx)*cs*upstream(uip,ui,uim);
+    }
+    else if (diff=="centered")
+    {
+      k[0][i]=(dt/dx)*cs*centered(uip,ui,uim);
+    }
+
 
     if(i==1)
     {
       continue;
     }
-    k[1][i] = U[i]+k[0][i]*(dt/2.)-(dt/dx)*cs
-          *(downstream(ui,uim)+k[0][i]*(dt/2.)-k[0][i-1]*(dt/2.));
+    if(diff=="downstream")
+    {
+    k[1][i] = k[0][i]*(dt/2.)-(dt/dx)*cs
+          *(downstream(uip,ui,uim)+k[0][i+1]*(dt/2.)-k[0][i]*(dt/2.));
+    }
+    else if (diff=="upstream")
+    {
+    k[1][i] = k[0][i]*(dt/2.)-(dt/dx)*cs
+          *(upstream(uip,ui,uim)+k[0][i]*(dt/2.)-k[0][i-1]*(dt/2.));
+    }
+    else if (diff=="centered")
+    {
+    k[1][i] = k[0][i]*(dt/2.)-(dt/dx)*cs
+          *(centered(uip,ui,uim)+k[0][i+1]*(dt/2.)-k[0][i-1]*(dt/2.));
+    }
+
+
     if(i==2)
     {
       continue;
     }
-    k[2][i] = U[i]+k[0][i]+2.*k[1][i]*dt-(dt/dx)*cs
-          *(downstream(ui,uim)+2.*dt*(k[1][i]-k[1][i-1])-(k[0][i]-k[0][i-1]));
+    if(diff=="downstream")
+    {
+    k[2][i] = k[0][i]+2.*k[1][i]*dt-(dt/dx)*cs
+          *(downstream(uip,ui,uim)+2.*dt*(k[1][i+1]-k[1][i])-(k[0][i+1]-k[0][i]));
+    }
+    else if (diff=="upstream")
+    {
+    k[2][i] = k[0][i]+2.*k[1][i]*dt-(dt/dx)*cs
+          *(upstream(uip,ui,uim)+2.*dt*(k[1][i]-k[1][i-1])-(k[0][i]-k[0][i-1]));
+    }
+    else if (diff=="centered")
+    {
+    k[2][i] = k[0][i]+2.*k[1][i]*dt-(dt/dx)*cs
+          *(centered(uip,ui,uim)+2.*dt*(k[1][i+1]-k[1][i-1])-(k[0][i+1]-k[0][i-1]));
+    }
 
     if(! U.ghostzone(i))
     {

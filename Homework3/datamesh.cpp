@@ -132,7 +132,6 @@ void DataMesh<T>::set_all_data(vector<T> &fill_data)
  */
 
 {
-  cout << gz.size() << endl;
   int k =0;
   if(gz.size()==0) //If there is no ghost zone, then can fill right away
   {
