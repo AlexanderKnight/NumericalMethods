@@ -30,7 +30,7 @@ Mesh::Mesh(int dimensions, vector<int> &extents, vector<int> &gz_extents)
 */
 {
 	dim=dimensions;
-  gz_extents=gz_extents;
+  gz_exts=gz_extents;
   sub_ext = extents;
   vector<int> total_extents;
   for(int i=0;i<dimensions;i++)
@@ -65,6 +65,14 @@ vector<int> Mesh::get_exts(void) const
 */
 {
 	return ext;
+}
+
+vector<int> Mesh::get_gz_exts(void) const
+/*
+  Gets ghostzone extents of Mesh
+*/
+{
+	return gz_exts;
 }
 
 int Mesh::get_total_points(void) const

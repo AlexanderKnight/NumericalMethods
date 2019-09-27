@@ -12,12 +12,12 @@ int main()
 {
   int dimensions = 1;
   vector<int> extents = {300};
-  vector<int> gz_extents = {1};
+  vector<int> gz_extents = {2};
   vector<vector<double> > limits = {{0.,2.*M_PI}};
   bool is_periodic=true;
   double cs=1.;
-  double cf;
   int time_steps = 300;
+  bool write_datafile = true;
   
   vector<double> sinx;
   sinx.resize(extents[0]);
@@ -28,54 +28,53 @@ int main()
   DataMesh<double> U = DataMesh<double>(dimensions, extents,gz_extents,is_periodic);
   Patch P = Patch(dimensions, extents, limits);
   double dx = P.dx(0);
+  vector<string> Method = {"ForwardEuler", "RungeKutta3"};
   vector<string> differencing = {"centered", "downstream", "upstream"};
-  vector<double> Dt = {0.1,0.2,0.3,0.4,0.5};
-  string filename;
-  //double dt = 0.25*dx;
-  //double dt = 0.00628947;
-  cout << "dx is " << dx << endl;
-  cout << "Total points are " << U.get_total_points() << endl;
+  vector<double> Cf = {0.1,0.2,0.3,0.4,0.5};
 
-  for(int diffs=0;diffs<differencing.size();diffs++)
+  int m,d,c;
+  string method,diffs;
+  double cf;
+  for(int m=0;m<Method.size();m++)
   {
-    cout << differencing[diffs] << endl;
-    for(int dt=0;dt<Dt.size();dt++)
+    method = Method[m];
+    for(int d=0;d<differencing.size();d++)
     {
-      U.set_all_data(sinx);
-      U.update_ghostzone();
-      U.print();
-      cout << "    " << Dt[dt] << endl;
-      filename = "data_files/ForwardEuler-"+differencing[diffs]+
-                      "-SineWave-dt-"+to_string(Dt[dt])+".dat";
-      ofstream datafile;
-      datafile.open(filename);
-      DataMesh<double> dU = DataMesh<double>(dimensions,extents,gz_extents,is_periodic);
-      U.write(datafile);
-      for(int t=0;t<time_steps;t++)
+      diffs = differencing[d];
+      cout << differencing[d] << endl;
+      for(int c=0;c<Cf.size();c++)
       {
-        if(t%50==0)
-        {
-          cout << "        " << t << endl;
-        }
-        ComputeRHS(P,U,dU,cs,"ForwardEuler",Dt[dt],differencing[diffs]);
-        cf = dx*Dt[dt];
-        dU *= cf;
-        dU += U;
-        U = dU;
+        cf = Cf[c];
+        U.set_all_data(sinx);
         U.update_ghostzone();
-        U.write(datafile);
+        cout << "    " << cf << endl;
+        TStepper(U,method,diffs,P,time_steps,cf,cs,write_datafile);
+        //for(int t=0;t<time_steps;t++)
+        //{
+          //if(t%50==0)
+          //{
+            //cout << "        " << t << endl;
+          //}
+          //ComputeRHS(P,U,dU,cs,"ForwardEuler",Dt[dt],differencing[diffs]);
+          //cf = dx*Dt[dt];
+          //dU *= cf;
+          //dU += U;
+          //U = dU;
+          //U.update_ghostzone();
+          //U.write(datafile);
+        //}
+        //datafile.close();
+        U.clean();
       }
-      datafile.close();
-      U.clean();
     }
   }
 
   string sinefilename;
   vector<double> sinx_temp;
   sinx_temp.resize(extents[0]);
-  for(int dt=0;dt<Dt.size();dt++)
+  for(int cf=0;cf<Cf.size();cf++)
   {
-    sinefilename = "data_files/Sinewave-dt-"+to_string(Dt[dt])+".dat";
+    sinefilename = "data_files/Sinewave-cf-"+to_string(Cf[cf])+".dat";
     ofstream sinefile;
     sinefile.open(sinefilename);
     for(int t=0;t<time_steps;t++)
@@ -90,7 +89,7 @@ int main()
       }
       for(int i=0;i<sinx.size();i++)
       {
-        sinx_temp[i]=sin(i*(limits[0][1]-limits[0][0])/(static_cast<double>(extents[0]))-t*dx*Dt[dt]);
+        sinx_temp[i]=sin(i*(limits[0][1]-limits[0][0])/(static_cast<double>(extents[0]))-t*dx*Cf[cf]);
         sinefile << sinx_temp[i] << " ";
       }
       sinefile << "\n";

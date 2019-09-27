@@ -15,13 +15,14 @@ class Mesh
 		Mesh(int dim, vector<int> &extents, vector<int> &gz_extents);
 		int get_dim(void) const;
 		vector<int> get_exts(void) const;
+    vector<int> get_gz_exts(void) const;
 		int get_total_points(void) const;
     vector<int> get_coords(int coord) const;
 
 	protected:
 		int dim;  // dimensions
 		vector<int> ext; // points along each axis
-    vector<int> gz_extents;
+    vector<int> gz_exts;
     vector<int> sub_ext;
 		int tot_points; // total points in mesh
     vector<int> stencil;
@@ -84,13 +85,26 @@ class Patch : public Mesh
 class ComputeRHS 
 {
   public:
-    ComputeRHS(Patch &patch, DataMesh<double> &U, DataMesh<double> &dU, double &cs,
+    ComputeRHS(DataMesh<double> &U, DataMesh<double> &dU, double &cs, double &dx,
                 string method, double &dt, string differencing="centered");
   private:
     vector<vector<double>> k;
-    void ForwardEuler(Patch &patch, DataMesh<double> &U, DataMesh<double> &dU, double &cs,
+    void ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU, double &cs, double &dx, double &dt,
                 string differencing="centered");
     void RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, const double &cs,
                 const double &dx, const double &dt);
 };
+
+//----------------------------------------------------
+//----------------------------------------------------
+
+class TStepper
+{
+  public:
+    TStepper(DataMesh<double> &U, string method, string differencing,
+              Patch &patch, int &time_steps, double &cf, double &cs,
+              bool write_datafile);
+};
+
+
 #endif
