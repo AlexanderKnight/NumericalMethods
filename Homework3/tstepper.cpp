@@ -7,7 +7,9 @@ using namespace std;
 #include "domain.hpp"
 #include "datamesh.cpp"
 
-TStepper::TStepper(DataMesh<double> &U, string method, string differencing, Patch &patch, int &time_steps, double &cf, double &cs, bool write_datafile)
+TStepper::TStepper(DataMesh<double> &U, string method, 
+    double (*diff_func)(const DataMesh<double> &, const int &, const double &), 
+    Patch &patch, int &time_steps, double &cf, double &cs, bool write_datafile)
 {
   int dim = U.get_dim();
   vector<int> exts=U.get_exts();
@@ -18,35 +20,59 @@ TStepper::TStepper(DataMesh<double> &U, string method, string differencing, Patc
   double dt = cf*dx;
   U.update_ghostzone();
 
+
   ofstream datafile;
   if(write_datafile)
   {
     string filename;
     if(method == "ForwardEuler")
     {
-      filename="data_files/ForwardEuler-"+differencing+"-SineWave-cf-"+to_string(cf)+".dat";
+      filename="data_files/ForwardEuler-SineWave-cf-"+to_string(cf)+".dat";
     }
     else if (method == "RungeKutta3")
     {
-      filename="data_files/RungeKutta3-"+differencing+"-SineWave-cf-"+to_string(cf)+".dat";
+      filename="data_files/RungeKutta3-SineWave-cf-"+to_string(cf)+".dat";
     }
     datafile.open(filename);
     U.write(datafile);
   }
 
-  DataMesh<double> dU = DataMesh<double>(dim,exts);
-  for(int t=0;t<time_steps;t++)
+  ComputeRHS rhs;
+
+  if(method=="ForwardEuler")
   {
-    ComputeRHS(U,dU,cs,dx,method,dt,differencing);
-    U = dU;
-    U.update_ghostzone();
+    DataMesh<double> dU = DataMesh<double>(dim,exts);
+    for(int t=0;t<time_steps;t++)
+    {
+      rhs.ForwardEuler(diff_func,U,dU,cs,dx,dt);
+      U = dU;
+      U.update_ghostzone();
+      if(write_datafile)
+      {
+        U.write(datafile);
+      }
+    }
     if(write_datafile)
     {
-      U.write(datafile);
+      datafile.close();
     }
   }
-  if(write_datafile)
+  else if(method=="RungeKutta3")
   {
-    datafile.close();
+    DataMesh<double> dU = DataMesh<double>(dim,exts);
+    for(int t=0;t<time_steps;t++)
+    {
+      rhs.RungeKutta3(diff_func,U,dU,cs,dx,dt);
+      U = dU;
+      U.update_ghostzone();
+      if(write_datafile)
+      {
+        U.write(datafile);
+      }
+    }
+    if(write_datafile)
+    {
+      datafile.close();
+    }
   }
 }

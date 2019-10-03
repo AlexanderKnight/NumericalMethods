@@ -48,11 +48,11 @@ template <class T> class DataMesh : public Mesh
     void print_ghostzone(void) const;
     void update_ghostzone(void);
     bool ghostzone(int coord) const;
-		void operator +=(DataMesh<T> &B);
+		void operator +=(const DataMesh<T> &B);
 		DataMesh<T> operator +(DataMesh<T> &B);
-		void operator *=(T &a);
+		void operator *=(T a);
     void operator =(DataMesh<T> &B);
-    T operator [](int i) const;
+    const T& operator [](int i) const;
     void write(ofstream &filename) const;
     void clean(void);
 	private:
@@ -85,14 +85,15 @@ class Patch : public Mesh
 class ComputeRHS 
 {
   public:
-    ComputeRHS(DataMesh<double> &U, DataMesh<double> &dU, double &cs, double &dx,
-                string method, double &dt, string differencing="centered");
-  private:
-    vector<vector<double>> k;
-    void ForwardEuler(DataMesh<double> &U, DataMesh<double> &dU, double &cs, double &dx, double &dt,
-                string differencing="centered");
-    void RungeKutta3(const DataMesh<double> &U, DataMesh<double> &dU, string diff,
+    //ComputeRHS(const DataMesh<double> &U, DataMesh<double> &dU, const double &cs, const double &dx,
+                //string method, const double &dt, string differencing="upstream");
+    void ForwardEuler(double (*fun)(const DataMesh<double> &, const int &, const double &),
+                      const DataMesh<double> &U, DataMesh<double> &dU,
                       const double &cs, const double &dx, const double &dt);
+    void RungeKutta3(double (*fun)(const DataMesh<double> &, const int&, const double&),
+                     const DataMesh<double> &U, DataMesh<double> &dU,
+                     const double &cs, const double &dx, const double &dt);
+  private:
 };
 
 //----------------------------------------------------
@@ -101,10 +102,49 @@ class ComputeRHS
 class TStepper
 {
   public:
-    TStepper(DataMesh<double> &U, string method, string differencing,
+    TStepper(DataMesh<double> &U, string method, 
+              double (*diff_func)(const DataMesh<double> &, const int &, const double &),
               Patch &patch, int &time_steps, double &cf, double &cs,
               bool write_datafile);
 };
 
+//=============================================================================
+// 1st Order Derivatives
+//=============================================================================
+
+const double inline
+centered(const DataMesh<double> &U, const int &i, const double &cs)
+{
+  return (U[i+1]-U[i-1])/2.;
+}
+
+double inline
+downstream(const DataMesh<double> &U, const int &i, const double &cs)
+{
+  return (U[i+1]-U[i]);
+}
+
+double inline
+upstream(const DataMesh<double> &U, const int &i, const double &cs)
+{
+  return (U[i]-U[i-1]);
+}
+
+
+//=============================================================================
+// 3rd Order Derivatives
+//=============================================================================
+
+double inline
+thirdOrderUpstream(const DataMesh<double> &U, const int &i, const double &cs)
+{
+  return (1./6.)*cs*(2.*U[i+1]+3.*U[i]-6.*U[i-1]+U[i-2]);
+}
+
+double inline
+thirdOrderDownstream(const DataMesh<double> &U, const int &i, const double &cs)
+{
+  return (1./6.)*cs*(-2.*U[i-1]-3.*U[i]+6.*U[i+1]-U[i+2]);
+}
 
 #endif

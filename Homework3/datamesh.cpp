@@ -337,7 +337,7 @@ void DataMesh<T>::write(ofstream &filename) const
   
 
 template<typename T>  
-inline void DataMesh<T>::operator +=(DataMesh<T> &B)
+inline void DataMesh<T>::operator +=(const DataMesh<T> &B)
 
 /* Overloads the += operator for DataMesh<int>, <double>, and <bool>.
  * Bool addition treated as AND operator.
@@ -402,7 +402,7 @@ DataMesh<T> DataMesh<T>::operator +(DataMesh<T> &B)
 }
 
 template<typename T>  
-void DataMesh<T>::operator *= (T &a)
+void DataMesh<T>::operator *= (T a)
 
 /* Overloads *= operator, for multiplying a <int> or <double> 
  * Datamesh by a scalar of the same type.
@@ -439,7 +439,7 @@ void DataMesh<T>::operator =(DataMesh<T> &B)
 }
 
 template<typename T>
-T DataMesh<T>::operator [](int i) const
+const T& DataMesh<T>::operator [](int i) const
 {
   assert(i < mesh_data.size());
   return mesh_data[i];
