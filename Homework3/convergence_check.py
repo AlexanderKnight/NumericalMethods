@@ -2,36 +2,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-def power_function(x, a, b):
-    return a*(x**b)
+def power_function(y, a, b, c):
+    return a*(y**b)+c
 
-Dt = ["0.100000", "0.200000","0.300000","0.400000","0.500000"]
-Diff = ["centered", "downstream", "upstream"]
 
-x = np.linspace(0,0.0175,500)
-prev_best = np.zeros(len(Dt)-1)
-next_best = np.zeros(len(Dt)-1)
+method = "RungeKutta3-SineWave"
+cf = "0.500000"
+exts = np.array((100,200,400,800,1600))
+x = np.linspace(100,1600,1000)
+maxdiff = np.zeros(len(exts))
+extents = np.array(("100","200","400","800","1600"))
+for i in range(len(exts)):
+    dat = np.genfromtxt("data_files/"+method+"-cf-"+str(cf)+"-"+str(exts[i])+".dat")
+    sin = np.genfromtxt("data_files/Sinewave-cf-"+str(cf)+"-"+str(exts[i])+".dat")
+    diff = np.abs(dat[:,2:-2]-sin);
+    maxdiff[i]=np.amax(diff)
 
-for diff in Diff:
-    plt.figure(figsize=(5,5))
-    plt.title("Forward Euler, "+diff)
-    plt.xlim(0,0.0175)
-    for i,dt in enumerate(Dt):
-        sine_data = np.genfromtxt("data_files/Sinewave-dt-"+dt+".dat")
-        data = np.genfromtxt("data_files/ForwardEuler-"+diff+"-SineWave-dt-"+dt+".dat")
-        data = data[:,1:-1]
-        diff_data = np.abs(data-sine_data)
-        if(i==0):
-            best = np.max(diff_data)
-            prev_best[i]=best
-        else:
-            next_best[i-1]=np.max(diff_data)
-            #dt = float(dt)*(2*np.pi)/(300)
-            plt.scatter(best,np.max(diff_data))
-            if(i!=len(Dt)-1):
-                prev_best[i]=np.max(diff_data)
-            best=np.max(diff_data)
-    opt,cov = curve_fit(power_function,prev_best,next_best)
-    print("Convergence order of {0} is {1}".format(diff,opt[1]))
-    plt.savefig("figures/ForwardEuler/convergence_plots/"+diff+".png",dpi=200)
-    plt.close()
+opt,cov = curve_fit(power_function,exts,maxdiff,[1,-3,0])
+plt.plot(exts,maxdiff)
+plt.plot(x,power_function(x,opt[0],opt[1],opt[2]),label="ax^b+c:\na={0}\nb={1}\nc={2}".format(opt[0],opt[1],opt[2]))
+plt.legend(bbox_to_anchor=(1,1))
+#plt.show()
+plt.savefig(method+"_ConvergenceTest.png",dpi=200)

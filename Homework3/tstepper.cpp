@@ -27,11 +27,11 @@ TStepper::TStepper(DataMesh<double> &U, string method,
     string filename;
     if(method == "ForwardEuler")
     {
-      filename="data_files/ForwardEuler-SineWave-cf-"+to_string(cf)+".dat";
+      filename="data_files/ForwardEuler-SineWave-cf-"+to_string(cf)+"-"+to_string(exts[0]-2*gz_exts[0])+".dat";
     }
     else if (method == "RungeKutta3")
     {
-      filename="data_files/RungeKutta3-SineWave-cf-"+to_string(cf)+".dat";
+      filename="data_files/RungeKutta3-SineWave-cf-"+to_string(cf)+"-"+to_string(exts[0]-2*gz_exts[0])+".dat";
     }
     datafile.open(filename);
     U.write(datafile);
