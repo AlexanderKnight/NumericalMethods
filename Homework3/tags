@@ -1,0 +1,90 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/3fdf28bc/
+Cf	one_d_plotter.py	/^Cf = ["0.100000", "0.200000","0.300000","0.400000","0.500000"]$/;"	v
+ComputeRHS	domain.hpp	/^class ComputeRHS $/;"	c
+DOMAIN_H	domain.hpp	/^#define DOMAIN_H$/;"	d
+DataMesh	datamesh.cpp	/^DataMesh<T>::DataMesh(int dimensions, vector<int> &extents)$/;"	f	class:DataMesh
+DataMesh	datamesh.cpp	/^DataMesh<T>::DataMesh(int dimensions, vector<int> &extents, $/;"	f	class:DataMesh
+DataMesh	domain.hpp	/^template <class T> class DataMesh : public Mesh$/;"	c
+Diff	convergence_check.py	/^Diff = ["centered", "downstream", "upstream"]$/;"	v
+Diff	one_d_plotter.py	/^Diff = ["centered", "downstream", "upstream"]$/;"	v
+Dt	convergence_check.py	/^Dt = ["0.100000", "0.200000","0.300000","0.400000","0.500000"]$/;"	v
+ForwardEuler	computerhs.cpp	/^ComputeRHS::ForwardEuler(double (*fun)(const DataMesh<double> &, const int &, const double &),$/;"	f	class:ComputeRHS	typeref:typename:void
+Mesh	domain.hpp	/^class Mesh$/;"	c
+Mesh	mesh.cpp	/^Mesh::Mesh(int dimensions, vector<int> &extents)$/;"	f	class:Mesh
+Mesh	mesh.cpp	/^Mesh::Mesh(int dimensions, vector<int> &extents, vector<int> &gz_extents)$/;"	f	class:Mesh
+Method	one_d_plotter.py	/^Method = ["ForwardEuler", "RungeKutta3"]$/;"	v
+Patch	domain.hpp	/^class Patch : public Mesh$/;"	c
+Patch	patch.cpp	/^Patch::Patch(int dimensions, vector<int> &extents,$/;"	f	class:Patch
+RungeKutta3	computerhs.cpp	/^ComputeRHS::RungeKutta3(double (*fun)(const DataMesh<double> &, const int &, const double &cs), $/;"	f	class:ComputeRHS	typeref:typename:void
+TStepper	domain.hpp	/^class TStepper$/;"	c
+TStepper	tstepper.cpp	/^TStepper::TStepper(DataMesh<double> &U, string method, $/;"	f	class:TStepper
+all	makefile	/^all:$/;"	t
+best	convergence_check.py	/^            best = np.max(diff_data)$/;"	v
+best	convergence_check.py	/^            best=np.max(diff_data)$/;"	v
+centered	domain.hpp	/^centered(const DataMesh<double> &U, const int &i, const double &cs)$/;"	f	typeref:typename:const double
+clean	datamesh.cpp	/^void DataMesh<T>::clean(void)$/;"	f	class:DataMesh	typeref:typename:void
+clean	makefile	/^clean:$/;"	t
+coordinates	domain.hpp	/^   	DataMesh<vector<double>> coordinates;$/;"	m	class:Patch	typeref:typename:DataMesh<vector<double>>
+cov	convergence_check.py	/^    opt,cov = curve_fit(power_function,prev_best,next_best)$/;"	v
+data	convergence_check.py	/^        data = data[:,1:-1]$/;"	v
+data	convergence_check.py	/^        data = np.genfromtxt("data_files\/ForwardEuler-"+diff+"-SineWave-dt-"+dt+".dat")$/;"	v
+data	one_d_plotter.py	/^            data = np.genfromtxt("data_files\/"+method+"-"+diff+"-SineWave-cf-"+cf+".dat")$/;"	v
+diff_data	convergence_check.py	/^        diff_data = np.abs(data-sine_data)$/;"	v
+dim	domain.hpp	/^		int dim;  \/\/ dimensions$/;"	m	class:Mesh	typeref:typename:int
+dimensions	domain.hpp	/^    int dimensions;$/;"	m	class:DataMesh	typeref:typename:int
+downstream	domain.hpp	/^downstream(const DataMesh<double> &U, const int &i, const double &cs)$/;"	f	typeref:typename:double
+dx	patch.cpp	/^double Patch::dx(int dim) const$/;"	f	class:Patch	typeref:typename:double
+ext	domain.hpp	/^		vector<int> ext; \/\/ points along each axis$/;"	m	class:Mesh	typeref:typename:vector<int>
+exts	domain.hpp	/^		vector<int> exts;$/;"	m	class:Patch	typeref:typename:vector<int>
+get_all_data	datamesh.cpp	/^vector<T> DataMesh<T>::get_all_data(void) const$/;"	f	class:DataMesh	typeref:typename:vector<T>
+get_coord	patch.cpp	/^vector<double> Patch::get_coord(int coord) const$/;"	f	class:Patch	typeref:typename:vector<double>
+get_coords	mesh.cpp	/^vector<int> Mesh::get_coords(int coord) const$/;"	f	class:Mesh	typeref:typename:vector<int>
+get_data_point	datamesh.cpp	/^T DataMesh<T>::get_data_point(int coordinate) const$/;"	f	class:DataMesh	typeref:typename:T
+get_dim	mesh.cpp	/^int Mesh::get_dim(void) const$/;"	f	class:Mesh	typeref:typename:int
+get_exts	mesh.cpp	/^vector<int> Mesh::get_exts(void) const$/;"	f	class:Mesh	typeref:typename:vector<int>
+get_gz_exts	mesh.cpp	/^vector<int> Mesh::get_gz_exts(void) const$/;"	f	class:Mesh	typeref:typename:vector<int>
+get_total_points	datamesh.cpp	/^int DataMesh<T>::get_total_points(void) const$/;"	f	class:DataMesh	typeref:typename:int
+get_total_points	mesh.cpp	/^int Mesh::get_total_points(void) const$/;"	f	class:Mesh	typeref:typename:int
+ghostzone	datamesh.cpp	/^bool DataMesh<T>::ghostzone(int coord) const$/;"	f	class:DataMesh	typeref:typename:bool
+gz	domain.hpp	/^    vector<bool> gz;$/;"	m	class:DataMesh	typeref:typename:vector<bool>
+gz_exts	domain.hpp	/^    vector<int> gz_exts;$/;"	m	class:Mesh	typeref:typename:vector<int>
+limits	domain.hpp	/^		vector<vector<double>> limits;$/;"	m	class:Patch	typeref:typename:vector<vector<double>>
+main	main.cpp	/^int main()$/;"	f	typeref:typename:int
+main	test.cpp	/^int main()$/;"	f	typeref:typename:int
+mesh_data	domain.hpp	/^		vector<T> mesh_data;$/;"	m	class:DataMesh	typeref:typename:vector<T>
+next_best	convergence_check.py	/^next_best = np.zeros(len(Dt)-1)$/;"	v
+np	convergence_check.py	/^import numpy as np$/;"	I
+np	one_d_plotter.py	/^import numpy as np$/;"	I
+operator *=	datamesh.cpp	/^void DataMesh<T>::operator *= (T a)$/;"	f	class:DataMesh	typeref:typename:void
+operator +	datamesh.cpp	/^DataMesh<T> DataMesh<T>::operator +(DataMesh<T> &B)$/;"	f	class:DataMesh	typeref:typename:DataMesh<T>
+operator +=	datamesh.cpp	/^inline void DataMesh<T>::operator +=(const DataMesh<T> &B)$/;"	f	class:DataMesh	typeref:typename:void
+operator =	datamesh.cpp	/^void DataMesh<T>::operator =(DataMesh<T> &B)$/;"	f	class:DataMesh	typeref:typename:void
+operator []	datamesh.cpp	/^const T& DataMesh<T>::operator [](int i) const$/;"	f	class:DataMesh	typeref:typename:const T &
+opt	convergence_check.py	/^    opt,cov = curve_fit(power_function,prev_best,next_best)$/;"	v
+plt	convergence_check.py	/^import matplotlib.pyplot as plt$/;"	I
+plt	one_d_plotter.py	/^import matplotlib.pyplot as plt$/;"	I
+power_function	convergence_check.py	/^def power_function(x, a, b):$/;"	f
+prev_best	convergence_check.py	/^prev_best = np.zeros(len(Dt)-1)$/;"	v
+print	datamesh.cpp	/^void DataMesh<T>::print(void) const$/;"	f	class:DataMesh	typeref:typename:void
+print	patch.cpp	/^void Patch::print(void) const$/;"	f	class:Patch	typeref:typename:void
+print_ghostzone	datamesh.cpp	/^void DataMesh<T>::print_ghostzone(void) const$/;"	f	class:DataMesh	typeref:typename:void
+set_all_data	datamesh.cpp	/^void DataMesh<T>::set_all_data(vector<T> &fill_data)$/;"	f	class:DataMesh	typeref:typename:void
+set_data_point	datamesh.cpp	/^void DataMesh<T>::set_data_point(int coordinate, T &data_point)$/;"	f	class:DataMesh	typeref:typename:void
+setup_ghostzone	datamesh.cpp	/^void DataMesh<T>::setup_ghostzone(vector<int> &extents,vector<int> &gz_extents, bool &is_periodi/;"	f	class:DataMesh	typeref:typename:void
+sine_data	convergence_check.py	/^        sine_data = np.genfromtxt("data_files\/Sinewave-dt-"+dt+".dat")$/;"	v
+sine_data	one_d_plotter.py	/^    sine_data = np.genfromtxt("data_files\/Sinewave-cf-"+cf+".dat")$/;"	v
+stencil	domain.hpp	/^    vector<int> stencil;$/;"	m	class:Mesh	typeref:typename:vector<int>
+sub_ext	domain.hpp	/^    vector<int> sub_ext;$/;"	m	class:Mesh	typeref:typename:vector<int>
+thirdOrderDownstream	domain.hpp	/^thirdOrderDownstream(const DataMesh<double> &U, const int &i, const double &cs)$/;"	f	typeref:typename:double
+thirdOrderUpstream	domain.hpp	/^thirdOrderUpstream(const DataMesh<double> &U, const int &i, const double &cs)$/;"	f	typeref:typename:double
+tot_points	domain.hpp	/^		int tot_points; \/\/ total points in mesh$/;"	m	class:Mesh	typeref:typename:int
+update_ghostzone	datamesh.cpp	/^void DataMesh<T>::update_ghostzone(void)$/;"	f	class:DataMesh	typeref:typename:void
+upstream	domain.hpp	/^upstream(const DataMesh<double> &U, const int &i, const double &cs)$/;"	f	typeref:typename:double
+write	datamesh.cpp	/^void DataMesh<T>::write(ofstream &filename) const$/;"	f	class:DataMesh	typeref:typename:void
+x	convergence_check.py	/^x = np.linspace(0,0.0175,500)$/;"	v
