@@ -72,6 +72,8 @@ int main()
     U.set_all_data(sinx);
     U.update_ghostzone();
 
+    // Spacial derivative function is defined in header file
+    // to ensure that all files have access to it.
     // DO NOT USE thirdOrderDownstream!!!!
     // DOES NOT WORK
 

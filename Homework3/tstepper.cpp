@@ -16,11 +16,11 @@ TStepper::TStepper(DataMesh<double> &U, string method,
   vector<int> gz_exts=U.get_gz_exts();
   bool is_periodic=true;
 
-  //double dx = patch.dx(0);
   double dt = cf*dx;
   U.update_ghostzone();
 
 
+  // Sets up for writing data to file
   ofstream datafile;
   if(write_datafile)
   {
