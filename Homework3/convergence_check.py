@@ -23,7 +23,7 @@ for i in range(len(exts)):
     maxdiff[i]=np.sum(diff)*dx[i]
     
 
-opt,cov = curve_fit(power_function,exts,maxdiff,[1,-4,0])
+opt,cov = curve_fit(power_function,exts,maxdiff,[1.,-3.,0.])
 print("The convergence order is {0:.2f}. See accompanied plot.".format(np.abs(opt[1])))
 plt.title("Convergence Check")
 plt.plot(exts,maxdiff, label="Error vs Extents")
