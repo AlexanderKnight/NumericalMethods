@@ -37,7 +37,6 @@ int main()
     cout << "dx is " << dx << endl;
     
     // Sets up comparison sine wave
-    cout << "Setting up sine wave" << endl;
     vector<double> sinx;
     sinx.resize(extents[e][0]);
     for(int i=0;i<sinx.size();i++)
@@ -50,7 +49,6 @@ int main()
     sinefilename = "data_files/Sinewave-cf-"+to_string(cf)+"-"+to_string(extents[e][0])+".dat";
     ofstream sinefile;
     sinefile.open(sinefilename);
-    cout << "Updating Sine Wave" << endl;
     for(int t=0;t<time_steps;t++)
     {
       if(t==0)
@@ -71,16 +69,13 @@ int main()
     sinefile.close();
 
     // Start main program
-    cout << "Setting sine data to U" << endl;
     U.set_all_data(sinx);
     U.update_ghostzone();
 
     // DO NOT USE thirdOrderDownstream!!!!
     // DOES NOT WORK
 
-    cout << "Starting TStepper" << endl;
     TStepper(U,method,thirdOrderUpstream,dx,time_steps,cf,cs,write_datafile);
-    cout << "TStepper done" << endl;
   }
 }
 

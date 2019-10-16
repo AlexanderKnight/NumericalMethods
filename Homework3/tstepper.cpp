@@ -59,9 +59,7 @@ TStepper::TStepper(DataMesh<double> &U, string method,
   }
   else if(method=="RungeKutta3")
   {
-    cout << "RK3 started" << endl;
     DataMesh<double> dU = DataMesh<double>(dim,exts);
-    cout << "time_steps are " << time_steps << endl;
     for(int t=0;t<time_steps;t++)
     {
       U.update_ghostzone();

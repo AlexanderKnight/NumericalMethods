@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "Removing any previous data files or plots"
+make clean
+echo ""
+echo ""
+echo "Compiling"
+make
+echo ""
+echo ""
+echo "Running program"
+./hw3
+echo ""
+echo ""
+echo "Plotting convergence checks"
+python -W ignore convergence_check.py
