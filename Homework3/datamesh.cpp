@@ -161,7 +161,7 @@ void DataMesh<T>::set_all_data(vector<T> &fill_data)
     {
       if(gz[i]==0)
       {
-        mesh_data[i+k] = fill_data[i];
+        mesh_data[i] = fill_data[i-k];
       }
       else
       {

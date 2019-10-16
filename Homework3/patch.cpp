@@ -16,11 +16,9 @@ Patch::Patch(int dimensions, vector<int> &extents,
 {
 // Reminder that coordinates is DataMesh<vector<double>>
 	vector<int> stencil = {1};
-  //coordinates=DataMesh<vector<double>>(dimensions,extents);
 	for(int i=1;i<dimensions;i++)
 	{
 		stencil.push_back(stencil[i-1]*extents[i-1]);
-cout << "Stencil is " << stencil[i-1]*extents[i-1] << endl;
 	}
 	
 //----------------------------------------------

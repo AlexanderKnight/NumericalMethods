@@ -104,7 +104,7 @@ class TStepper
   public:
     TStepper(DataMesh<double> &U, string method, 
               double (*diff_func)(const DataMesh<double> &, const int &, const double &),
-              Patch &patch, int &time_steps, double &cf, double &cs,
+              double &dx, int &time_steps, double &cf, double &cs,
               bool write_datafile);
 };
 
@@ -145,6 +145,16 @@ double inline
 thirdOrderDownstream(const DataMesh<double> &U, const int &i, const double &cs)
 {
   return (1./6.)*cs*(-2.*U[i-1]-3.*U[i]+6.*U[i+1]-U[i+2]);
+}
+
+//=============================================================================
+// 4th Order Derivatives
+//=============================================================================
+
+double inline
+fourthOrderCentered(const DataMesh<double> &U, const int &i, const double &cs)
+{
+  return (1./12.)*cs*(-1.*U[i+2]+8.*U[i+1]-8.*U[i-1]+U[i-2]);
 }
 
 #endif

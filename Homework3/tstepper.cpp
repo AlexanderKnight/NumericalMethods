@@ -9,14 +9,14 @@ using namespace std;
 
 TStepper::TStepper(DataMesh<double> &U, string method, 
     double (*diff_func)(const DataMesh<double> &, const int &, const double &), 
-    Patch &patch, int &time_steps, double &cf, double &cs, bool write_datafile)
+    double &dx, int &time_steps, double &cf, double &cs, bool write_datafile)
 {
   int dim = U.get_dim();
   vector<int> exts=U.get_exts();
   vector<int> gz_exts=U.get_gz_exts();
   bool is_periodic=true;
 
-  double dx = patch.dx(0);
+  //double dx = patch.dx(0);
   double dt = cf*dx;
   U.update_ghostzone();
 
@@ -59,9 +59,12 @@ TStepper::TStepper(DataMesh<double> &U, string method,
   }
   else if(method=="RungeKutta3")
   {
+    cout << "RK3 started" << endl;
     DataMesh<double> dU = DataMesh<double>(dim,exts);
+    cout << "time_steps are " << time_steps << endl;
     for(int t=0;t<time_steps;t++)
     {
+      U.update_ghostzone();
       rhs.RungeKutta3(diff_func,U,dU,cs,dx,dt);
       U = dU;
       U.update_ghostzone();

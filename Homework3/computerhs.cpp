@@ -61,7 +61,7 @@ ComputeRHS::RungeKutta3(double (*fun)(const DataMesh<double> &, const int &, con
   k1.update_ghostzone();
  
   k_temp = k1;
-  double dt_scale = dt/2.;
+  double dt_scale = dt/3.;
   k_temp *= dt_scale;
   k_temp += U;
   k_temp.update_ghostzone();
@@ -76,11 +76,9 @@ ComputeRHS::RungeKutta3(double (*fun)(const DataMesh<double> &, const int &, con
   k2.update_ghostzone();
 
   // Evaluate k_temp = U + dt(-k1+2*k2)
-  k_temp = k1;
-  k_temp *= -1.;
-  k_temp += k2;
-  k_temp += k2;
-  k_temp *= dt;
+  k_temp = k2;
+  dt_scale = (2.*dt)/3.;
+  k_temp *= dt_scale;
   k_temp += U;
   k_temp.update_ghostzone();
   for(int i=0;i<U.get_total_points();i++)
@@ -92,11 +90,12 @@ ComputeRHS::RungeKutta3(double (*fun)(const DataMesh<double> &, const int &, con
     }
   }
   k3.update_ghostzone();
+  //k3.print();
   for(int i=0;i<U.get_total_points();i++)
   {
     if(! U.ghostzone(i))
     {
-      val=U[i]+(dt/6.)*(k1[i]+4.*k2[i]+k3[i]);
+      val=U[i]+(dt/4.)*(k1[i]+3.*k3[i]);
       dU.set_data_point(i,val);
     }
   }
