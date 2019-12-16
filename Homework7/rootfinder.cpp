@@ -72,7 +72,7 @@ RootFinder::Find_Temp(const double &mW,
     TempMid = Temp(W,TLimMid);
     TempMin = Temp(W,TLimMin);
     TempMax = Temp(W,TLimMax);
-    if (abs((TLimMax-TLimMin)/2.)<tol)
+    if (fabs((TLimMax-TLimMin)/2.)<tol)
     {
       return TLimMid;
     }
@@ -150,7 +150,7 @@ RootFinder::Find_Lorentz(double &mWLimMin, double &mWLimMax, double &mTLimMin,
       if(WMid==-1.) return error;
 
       
-      if((abs((WLimMax-WLimMin)/2.)<tol) && ((abs(TMax-TMin)/2.)<tol))
+      if((fabs((WLimMax-WLimMin)/2.)<tol) && ((fabs(TMax-TMin)/2.)<tol))
       {
         vector<double> result = {WLimMid, TMid};
         //result.push_back(WLimMid);
@@ -200,7 +200,7 @@ RootFinder::Find_Lorentz(double &mWLimMin, double &mWLimMax, double &mTLimMin,
 
       
       
-      if(abs((WLimMax-WLimMin)/2.)<tol)
+      if(fabs((WLimMax-WLimMin)/2.)<tol)
       {
         vector<double> result;
         result.push_back(WLimMid);
@@ -244,7 +244,7 @@ RootFinder::Bisection(const double (*func)(const double &x), const double &a,
   double c;
   
   c = (left+right)/2.;
-  if (abs((*func)(c))<tol||((right-left)/2.)<tol)
+  if (fabs((*func)(c))<tol||((right-left)/2.)<tol)
   {
     return c;
   }
@@ -335,7 +335,7 @@ RootFinder::TwoDNewton(const double &W0, const double &T0,
     F[1] = Temp(W_sol,T_sol);
 
 
-    if(abs(F[0])<tol and abs(F[1])<tol)
+    if(fabs(F[0])<tol and fabs(F[1])<tol)
     {
       vector<double> answer = {W_sol,T_sol};
       return answer;
@@ -442,7 +442,7 @@ RootFinder::RobustCheck(const int rhoLimLow, const int rhoLimHigh,
         continue;
       }*/
 
-      if((abs(guessT_rand[0]-W_rand)<(1.e4*tol)) and (abs(guessT_rand[1]-T_rand)<1.e4*tol))
+      if((fabs(guessT_rand[0]-W_rand)<(1.e4*tol)) and (fabs(guessT_rand[1]-T_rand)<1.e4*tol))
       {
         correct_counts[0]++;
       }
@@ -456,7 +456,7 @@ RootFinder::RobustCheck(const int rhoLimLow, const int rhoLimHigh,
       //{
        // continue;
       //}
-      if((abs(guessP_rand[0]-W_rand)<1.e4*tol) and (abs(guessP_rand[1]-T_rand)<1.e4*tol))
+      if((fabs(guessP_rand[0]-W_rand)<1.e4*tol) and (fabs(guessP_rand[1]-T_rand)<1.e4*tol))
       {
         correct_counts[1]++;
       }
@@ -471,8 +471,8 @@ RootFinder::RobustCheck(const int rhoLimLow, const int rhoLimHigh,
     {
       vector<double> guessTwoDNewton_rand = TwoDNewton(W_rand_guess,T_rand_guess,rho_rand,SqrtDetg,
                                                 S_rand_ref,tau_rand_ref,epsilon,tol,maxIt);
-      cout <<"TwoDNewtonDiff[W,T]: ["<<abs(guessTwoDNewton_rand[0]-W_rand)<<", "<<abs(guessTwoDNewton_rand[1]-T_rand)<<"]"<<endl;
-      if((abs(guessTwoDNewton_rand[0]-W_rand)<1.e4*tol) and (abs(guessTwoDNewton_rand[1]-T_rand)<1.e4*tol))
+      cout <<"TwoDNewtonDiff[W,T]: ["<<fabs(guessTwoDNewton_rand[0]-W_rand)<<", "<<fabs(guessTwoDNewton_rand[1]-T_rand)<<"]"<<endl;
+      if((fabs(guessTwoDNewton_rand[0]-W_rand)<1.e4*tol) and (fabs(guessTwoDNewton_rand[1]-T_rand)<1.e4*tol))
       {
         correct_counts[2]++;
       }
@@ -500,7 +500,7 @@ double
 SIGN(const double a, const double b)
 {
   double sign, val;
-  val = abs(a);
+  val = fabs(a);
   if(b>0.)
   {
     return val;
@@ -560,7 +560,7 @@ RootFinder::BracketMinimum(const double (*func)(const double &x),
     }
     r=(bx-ax)*(fb-fc);
     q=(bx-cx)*(fb-fa);
-    u=bx-((bx-cx)*q-(bx-ax)*r)/(2.*SIGN(MAX(abs(q-r),TINY),q-r));
+    u=bx-((bx-cx)*q-(bx-ax)*r)/(2.*SIGN(MAX(fabs(q-r),TINY),q-r));
     ulim=bx+GLIMIT*(cx-bx);
     if((bx-u)*(u-cx)>0.)
     {
@@ -633,13 +633,13 @@ RootFinder::Brent(const double (*func)(const double &x),
   for(int iter=0;iter<maxIt;iter++)
   {
     xm=0.5*(a+b);
-    tol1=tol*abs(x)+TINY;
+    tol1=tol*fabs(x)+TINY;
     tol2=2.*tol1;
-    if(abs(x-xm) <= (tol2-0.5*(b-a)))
+    if(fabs(x-xm) <= (tol2-0.5*(b-a)))
     {
       return x;
     }
-    if(abs(e) > tol)
+    if(fabs(e) > tol)
     {
       r=(x-w)*(fx-fv);
       q=(x-v)*(fx-fw);
@@ -649,9 +649,9 @@ RootFinder::Brent(const double (*func)(const double &x),
       {
         p = -p;
       }
-      q=abs(q);
+      q=fabs(q);
       etemp=e;
-      if (abs(p) >= abs(0.5*q*etemp) || p <= q*(a-x) || p >= q*(b-x))
+      if (fabs(p) >= fabs(0.5*q*etemp) || p <= q*(a-x) || p >= q*(b-x))
       {
         e=(x >= xm ? a-x : b-x );
         d=GOLD*e;
@@ -671,7 +671,7 @@ RootFinder::Brent(const double (*func)(const double &x),
       e=(x >= xm ? a-x : b-x );
       d=GOLD*e;
     }
-    u = (abs(d) >= tol1 ? x+d : x+SIGN(tol1,d));
+    u = (fabs(d) >= tol1 ? x+d : x+SIGN(tol1,d));
     fu=func(u);
     if (fu <= fx)
     {

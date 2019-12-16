@@ -10,22 +10,13 @@ using namespace std;
 #include "min.hpp"
 #include "rf.hpp"
 
-/*
-F1dim::F1dim(vector<double> &pp, vector<double> &xii,
-             const double (*funcc)(const vector<double> &x))
-{
-  p=pp;
-  xi=xii;
-  func=funcc;
-  n=p.size();
-  xt.resize(n);
-}
-*/
 
 TwoDMinimum::TwoDMinimum(const double (*funcc)(const double &x),
                          const double (*TwoDFuncc)(const vector<double> &x),
                           const double (*betaa)(const vector<double> &xni,
                                                 const vector<double> &xnj))
+/* Constructor for class to handle finding local minimum of 2D space
+ */
 {
   func=funcc;
   TwoDFunc=TwoDFuncc;
@@ -39,29 +30,40 @@ TwoDMinimum::FindMinimum(const double (*func)(const double &xx),
                                           const vector<double> &xnj),
                           const vector<double> &pp, const double &epsilon,
                           const double &tol, const int &maxIt)
+/* Class function to determine local minimum of 2D space.
+ *
+ * Input Parameters:
+ * func: pointer to 1D function to parameterize 2D function
+ * TwoDFunc: point to 2D function space
+ * beta: pointer to beta function of nonlinear conjugate gradient method
+ * pp: vector of coordinates to start search from
+ * epsilon: step size for derivative
+ * tol: distance, if last two steps are less than tol apart, assumes at minimum.
+ * maxIt: maximum iterations allowed. Keeps from infinite loops
+ */
 {
-  vector<double> delx0 = pp;
+  vector<double> delx0 = pp; // First step
   vector<double> delx1 = pp;
   const int n = pp.size();
-  vector<double> xhold(n);
-  vector<double> xi(n);
+  vector<double> xhold(n); // variable to hold during transfers
+  vector<double> xi(n); // steepest discent direction
 
 
   steepest_descent(*TwoDFunc,pp,xi,epsilon);
   RootFinder rf = RootFinder();
-  double ax=0.,xx=1.;
+  double ax=0.,xx=1.; // boundaries of 1D minimum finder
   vector<double> bracket = rf.BracketMinimum(*func,ax,xx,tol,maxIt);
   double min = rf.Brent(*func,bracket[0],bracket[1],bracket[2],tol,maxIt);
 
   vector<double> xi_sol=xi;
-  for(int j=0;j<n;j++)
+  for(int j=0;j<n;j++) // Shift coordinates to 1D minimum coordinate
   {
     xi_sol[j] *= min;
     delx1[j] += xi_sol[j];
   }
-  vector<double> s0 = xi;
+  vector<double> s0 = xi; // update conjugate direction
 
-  double bet;
+  double bet; // value of beta function
   for(int iter=0;iter<maxIt;iter++)
   {
     steepest_descent(*TwoDFunc,delx1,xi,epsilon);
@@ -81,7 +83,8 @@ TwoDMinimum::FindMinimum(const double (*func)(const double &xx),
       xi_sol[j] *= min;
       delx1[j] += xi_sol[j];
     }
-    if(fabs(magnitude(delx0)-magnitude(delx1))<tol)
+    if(fabs(magnitude(delx0)-magnitude(delx1))<tol) // finishes program if step
+                                                    // size is too small
     {
       return delx1;
     }
@@ -94,11 +97,24 @@ void
 TwoDMinimum::steepest_descent(const double (*funcc)(const vector<double> &x),
                               const vector<double> &x0, vector<double> &delx,
                               const double epsilon)
+/* Calculates direction of steepest discent 
+ *
+ * Input Parameters:
+ * funcc: N-dimensional function
+ * x0: N-d coordinates in function
+ * epsilon: step size for derivative
+ *
+ * Ouptut Parameter:
+ * delx: coordinate of steepest direction
+ */
+
 {
   const int dimm = x0.size();
   vector<double> x0_temp(dimm);
-  double ftempm;
-  double ftempp;
+  double ftempm; // function at f(x-epsilon)
+  double ftempp; // function at f(x+epsilon)
+
+  // Derivative takes form of (f(x+e)-f(x-e))/(2*e)
 
   for(int dim=0;dim<dimm;dim++)
   {

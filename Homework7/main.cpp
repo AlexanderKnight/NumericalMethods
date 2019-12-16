@@ -24,6 +24,8 @@ const double square(const double &x)
 {
   return (x-2)*(x-2);
 }
+
+// generates noisy, but smooth data
 const double noise(const double &x)
 {
   double alpha=-0.143*sin(1.75*(x+1.73));
@@ -48,6 +50,7 @@ const double well(const vector<double> &xii)
   return xii[0]*xii[0]+xii[1]*xii[1];
 }
 
+// function to parameterize line in N-dimensional space
 const double fpass(const double &x)
 {
   for(int j=0;j<n;j++)
@@ -72,7 +75,7 @@ int main()
 
   RootFinder rf = RootFinder();
   vector<double> bounds = rf.BracketMinimum(*square,a,b,tol,maxIt);
-  cout<<"Bounds:"<<bounds[0]<<","<<bounds[1]<<","<<bounds[2]<<endl;
+  cout<<"Bounds (should contain x=2):"<<bounds[0]<<","<<bounds[1]<<","<<bounds[2]<<endl;
   assert(square(bounds[0])>square(bounds[1]) && square(bounds[1])<square(bounds[2]));
 
   // Part 2
