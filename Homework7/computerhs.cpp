@@ -12,7 +12,7 @@ minmod(const double a, const double b)
 {
   if(a*b>0)
   {
-    double ans = (abs(a)>abs(b)) ? a : b;
+    double ans = (fabs(a)>fabs(b)) ? a : b;
     return ans;
   }
   else

@@ -24,6 +24,8 @@ const double square(const double &x)
 {
   return (x-2)*(x-2);
 }
+
+// generates noisy, but smooth data
 const double noise(const double &x)
 {
   double alpha=-0.143*sin(1.75*(x+1.73));
@@ -48,6 +50,7 @@ const double well(const vector<double> &xii)
   return xii[0]*xii[0]+xii[1]*xii[1];
 }
 
+// function to parameterize line in N-dimensional space
 const double fpass(const double &x)
 {
   for(int j=0;j<n;j++)
@@ -72,13 +75,15 @@ int main()
 
   RootFinder rf = RootFinder();
   vector<double> bounds = rf.BracketMinimum(*square,a,b,tol,maxIt);
-  cout<<"Bounds:"<<bounds[0]<<","<<bounds[1]<<","<<bounds[2]<<endl;
+  cout<<"Bounds (should contain x=2):"<<bounds[0]<<","<<bounds[1]<<","<<bounds[2]<<endl;
   assert(square(bounds[0])>square(bounds[1]) && square(bounds[1])<square(bounds[2]));
 
   // Part 2
 
   double min = rf.Brent(*square,bounds[0],bounds[1],bounds[2],tol,maxIt);
   cout << "Min of (x-2)^2 is " << min<<endl;
+
+  cout << "Finding minimum of noisy data (see included png for image)" << endl;
 
   const double noise_a = -1.;
   const double noise_b = -0.5;
@@ -88,10 +93,12 @@ int main()
   cout<<"Min of noise is "<<noise_min<<endl;
 
   // Part 3
-
+  //
   double ax, xx, xmin;
   ax=0.0;
   xx=1.0;
+
+  cout << "Starting coordinate is (-9,-9), end point is (9,9)" << endl;
   ofstream wellfile;
   wellfile.open("TwoDWellLineData.dat");
   double x_samp;
@@ -103,7 +110,7 @@ int main()
   wellfile.close();
 
   vector<double> twoDBracket = rf.BracketMinimum(*fpass,ax,xx,tol,maxIt);
-  cout<<"TwoDBracket is:"<<twoDBracket[0]<<", "<<twoDBracket[1]<<", "<<twoDBracket[2]<<endl;
+  cout<<"TwoDBracket is (should bracket -0.2 or possibly -0.85):"<<twoDBracket[0]<<", "<<twoDBracket[1]<<", "<<twoDBracket[2]<<endl;
   double twoDMin = rf.Brent(*fpass,twoDBracket[0],twoDBracket[1],twoDBracket[2],tol,maxIt);
   vector<double> xi_sol=xi;
   xi_sol[0]=xi[0]-p[0];
@@ -118,6 +125,7 @@ int main()
 
   // Part 4
 
+  cout << "2D function is x^2+y^2, so minimum at 0,0" << endl;
   const double epsilon = 1e-12;
   const double tol2 = 1e-16;
   TwoDMinimum td = TwoDMinimum(*fpass,*well,*FRPR);
