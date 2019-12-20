@@ -19,32 +19,10 @@ int main()
   bool runPart3=1;
   bool runPart4=1;
 
-  vector<vector<double>> test = {{1.,2.},{3.,4.}};
-  vector<vector<double>> test_inv = inverse_matrix(test);
-  cout << "Test Matrix: " << endl;
-  for(int i=0;i<test.size();i++)
-  {
-    for(int j=0;j<test[i].size();j++)
-    {
-      cout << test[i][j] << " ";
-    }
-    cout << endl;
-  }
-  cout << endl;
-  cout << "Inverse Test Matrix: " << endl;
-  for(int i=0;i<test_inv.size();i++)
-  {
-    for(int j=0;j<test_inv[i].size();j++)
-    {
-      cout << test_inv[i][j] << " ";
-    }
-    cout << endl;
-  }
-
   // Part 1
   cout<<endl<<"----Part 1----"<<endl;
 
-  cout.precision(13);
+  cout.precision(16);
   double SqrtDetg = 1.;
   double rho0 = 1.e-4;
   double T_ref = 2.e-4;
@@ -86,8 +64,8 @@ int main()
   double TLimMax = 1.;
 
   // Root-Finding variables
-  double tol = 1.e-8;
-  int maxIt = 1e4;
+  double tol = 3.e-12;
+  int maxIt = 1e2;
 
   //RootFinder rf=RootFinder(rho_ref, SqrtDetg,S_ref,tau_ref);
   RootFinder rf;
@@ -125,7 +103,7 @@ int main()
   double T_guess = 1.9e-4; // correct value is 2.e-4
   double W_guess = 1.1;   // correct value is 1.0
 
-  double epsilon = 1.e-12;
+  double epsilon = 1.e-8;
 
   if(runPart3)
   {
@@ -137,24 +115,27 @@ int main()
     cout << "Results from 2DNewton are W=" << guessTwoDNewton[0] << ", T=" << guessTwoDNewton[1] << endl;
     cout << "Time for 2DNewton run is "<< elapsedN.count() << " s" << endl;
 
-    /* Note: While this is not currently faster than the previous methods,
-     *        I think that this is due to the function to calculate the 
-     *        determinant and inverse matrix of the Jacobian. I am going to
-     *        leave it for the time being, since it is stable and calculating
-     *        W and T correctly, but I will probably come back to fix this.
-     */
   }
 
   // Part 4
   cout <<endl<< "----Part 4----" << endl;
 
   int testCount =100;
-  //double testTol = 1.e-6;
 
   if(runPart4)
   {
     vector<bool> partsToRun = {1,1,1};
-    vector<int> correct_counts = rf.RobustCheck(-12,-3,-6,-1,0,2,testCount,partsToRun,tol,maxIt,epsilon);
+    const int rho0_pow_min = -12;
+    const int rho0_pow_max = -2;
+    const int T_pow_min = -5;
+    const int T_pow_max = -1;
+    const int W_pow_min = 0;
+    const int W_pow_max = 2;
+    vector<int> correct_counts = rf.RobustCheck(rho0_pow_min,rho0_pow_max,
+                                                T_pow_min,T_pow_max,
+                                                W_pow_min,W_pow_max,
+                                                testCount,partsToRun,tol,
+                                                maxIt,epsilon);
     cout << "The number of times that the root finding methods correctly determined the primative variables {Bisection-Temp, Bisection-Pressure, 2DNewton} : {";
     cout << correct_counts[0]<<", "<<correct_counts[1]<<", "<<correct_counts[2]<<"}"<<endl;
   }

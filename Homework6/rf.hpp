@@ -18,12 +18,13 @@ class RootFinder
     double Newton(const double (*func)(const double &x),
                   const double &epsilon, const double &x0, const double &tol,
                   const int &maxIt);
-    vector<double> Find_Lorentz(double &WLimMin, double &WLimMax, double &TLimMin, 
-                  double &TLimMax, const double &rho, const double &tau,
+    vector<double> Find_Lorentz(const double &WLimMin, const double &WLimMax, 
+                  const double &TLimMin, const double &TLimMax, 
+                  const double &rho, const double &tau,
                   const double &S, const double &SqrtDetg,
                   const double &tol, const int &maxIt, const char &solveVar);
     double Find_Pressure(const double &W);
-    double Find_Temp(const double &W, double &mTLimMin, double &mTLimMax,
+    double Find_Temp(const double &W, const double &mTLimMin, const double &mTLimMax,
                       const double &tol, const int &maxIt);
                   
     double Lorentz(const double &W, const double &T);
